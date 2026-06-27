@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingestion — InfraMind</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="index.html" class="brand">InfraMind</a>
+    <div class="links">
+      <a href="index.html" class="">Overview</a>
+      <a href="architecture.html" class="">Architecture</a>
+      <a href="pipeline.html" class="">Pipeline</a>
+      <a href="ingestion.html" class=" active">Ingestion</a>
+      <a href="detection.html" class="">Detection</a>
+      <a href="rca.html" class="">Root Cause</a>
+      <a href="alerting.html" class="">Alerting</a>
+      <a href="decisions.html" class="">Decisions</a>
+    </div>
+  </div>
+</nav>
+<main>
+<div class="container">
+
+
+  <div class="page-title">
+    <h1>Ingestion Layer</h1>
+    <p class="sub">Stage 1 — four parallel collectors feeding a shared event bus.</p>
+  </div>
+
+  <section>
+    <h2 class="section-title">Collectors &amp; Event Bus</h2>
+    <hr class="section-divider">
+    <div class="section-body">
+      <p>Four parallel collectors — each specialized for a signal type — pull or receive data from existing observability tools. Every collector enriches its output with a common <strong>service identifier</strong>, an <strong>infrastructure layer tag</strong> (k8s / cloud / microservice / vm), and a wall-clock timestamp before publishing to the event bus. This normalized envelope is what allows downstream stages to correlate across pillars that were never designed to work together.</p>
+    </div>
+    <div class="card-grid">
+      <div class="card"><span class="icon">⊞</span><h4>Log Collector</h4><p>Pulls from ELK (Elasticsearch) and Loki via their streaming APIs. Parses every entry to extract service name, log level, error codes, trace IDs. Handles K8s pod logs, CloudWatch/GCP Logging, microservice app logs, and syslog.</p></div>
+      <div class="card"><span class="icon">◈</span><h4>Metrics Collector</h4><p>Scrapes Prometheus endpoints at configurable intervals (default 30s) and polls the Datadog API. Collects K8s metrics (kube-state-metrics, cAdvisor), cloud provider metrics, and VM host-level metrics from node exporters.</p></div>
+      <div class="card"><span class="icon">◉</span><h4>Trace Ingester</h4><p>Consumes distributed traces from Jaeger's Query API and OpenTelemetry Collector via OTLP (gRPC/HTTP). Extracts span-level data and continuously builds the service dependency graph — the backbone of RCA traversal.</p></div>
+      <div class="card"><span class="icon">⊡</span><h4>Alert Consumer</h4><p>Receives webhook payloads from PagerDuty and Grafana. Normalizes every alert to a unified internal schema (service, severity, description, timestamp). Implements adaptive back-pressure for high-volume spikes.</p></div>
+    </div>
+    <div class="figure">
+      <img src="../assets/Pasted%20image%20(6).png" alt="Ingestion layer diagram">
+      <div class="label">Figure 5: Ingestion layer — four collector types, each feeding the shared event bus</div>
+    </div>
+  </section>
+
+</div>
+</main>
+</body>
+</html>

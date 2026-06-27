@@ -1,0 +1,168 @@
+/* InfraMind — shared styles */
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --border: #d4d4d4;
+  --text: #111111;
+  --text-secondary: #555555;
+  --text-tertiary: #888888;
+  --accent: #000000;
+  --line: #e5e5e5;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 56px;
+  display: flex; align-items: center;
+}
+nav .inner {
+  max-width: 1000px; margin: 0 auto; width: 100%;
+  display: flex; align-items: center; gap: 2rem;
+}
+nav .brand {
+  font-weight: 700; font-size: 1rem; letter-spacing: -0.02em;
+  text-decoration: none; color: var(--text);
+  white-space: nowrap;
+}
+nav .links { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
+nav .links::-webkit-scrollbar { display: none; }
+nav .links a {
+  display: block; padding: 0 0.9rem;
+  font-size: 0.8rem; color: var(--text-secondary); text-decoration: none;
+  line-height: 56px; border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+nav .links a:hover { color: var(--text); }
+nav .links a.active { color: var(--accent); border-bottom-color: var(--accent); }
+main { padding: 80px 2rem 6rem; }
+.container { max-width: 840px; margin: 0 auto; }
+.page-title {
+  text-align: center;
+  padding: 3rem 0 2rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 3rem;
+}
+.page-title h1 {
+  font-size: 2.4rem; font-weight: 700; letter-spacing: -0.03em;
+  line-height: 1.15; margin-bottom: 0.5rem;
+}
+.page-title .sub {
+  font-size: 1rem; color: var(--text-secondary);
+  max-width: 540px; margin: 0 auto;
+  line-height: 1.6;
+}
+.page-title .meta {
+  margin-top: 1rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+}
+.page-title .meta span { font-size: 0.85rem; color: var(--text-secondary); }
+.page-title .meta strong { color: var(--text); }
+.section-title {
+  font-size: 1.6rem; font-weight: 600;
+  letter-spacing: -0.02em; margin-bottom: 0.5rem;
+}
+.section-subtitle {
+  font-size: 0.9rem; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 0.25rem;
+}
+.section-divider {
+  width: 40px; height: 3px; background: var(--accent);
+  margin: 1rem 0 1.5rem; border: none;
+}
+section { margin-bottom: 4rem; }
+.section-body p { margin-bottom: 1rem; color: var(--text-secondary); }
+.section-body p strong { color: var(--text); font-weight: 600; }
+.figure {
+  margin: 2.5rem auto; padding: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border); border-radius: 4px;
+  text-align: center; max-width: 100%;
+}
+.figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+.figure .label {
+  margin-top: 0.75rem;
+  font-size: 0.8rem; color: var(--text-tertiary);
+}
+.pipeline {
+  display: flex; align-items: stretch; gap: 0;
+  margin: 2rem 0; overflow-x: auto;
+  border: 1px solid var(--border); border-radius: 4px;
+  background: var(--surface);
+}
+.pipe-stage {
+  flex: 1; min-width: 130px; padding: 1.25rem 1rem;
+  text-align: center; position: relative;
+}
+.pipe-stage + .pipe-stage { border-left: 1px solid var(--line); }
+.pipe-stage .icon { font-size: 1.3rem; margin-bottom: 0.4rem; display: block; }
+.pipe-stage h5 {
+  font-size: 0.7rem; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-tertiary);
+  margin-bottom: 0.25rem;
+}
+.pipe-stage p { font-size: 0.8rem; color: var(--text); margin: 0; }
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem; margin: 2rem 0;
+}
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; padding: 1.5rem;
+  transition: box-shadow 0.2s;
+}
+.card:hover { box-shadow: 0 2px 16px rgba(0,0,0,0.04); }
+.card .icon { font-size: 1.5rem; display: block; margin-bottom: 0.75rem; }
+.card h4 { font-size: 0.9rem; margin-bottom: 0.4rem; }
+.card p { font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.6; }
+.arch-svg { margin: 2rem 0; overflow-x: auto; }
+.arch-svg pre {
+  display: inline-block; padding: 1.5rem 2rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.8rem; line-height: 1.6;
+  color: var(--text-secondary);
+}
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0; }
+.two-col .col h4 { font-size: 0.9rem; margin-bottom: 0.5rem; }
+.two-col .col p, .two-col .col ul { font-size: 0.9rem; color: var(--text-secondary); }
+.two-col .col ul { padding-left: 1.2rem; }
+.two-col .col li { margin-bottom: 0.3rem; }
+.decision { margin: 1.5rem 0; }
+.decision h4 { font-size: 1rem; margin-bottom: 0.3rem; }
+.decision .context { font-size: 0.85rem; color: var(--text-tertiary); margin-bottom: 0.4rem; }
+.decision p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
+.tech-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0; }
+.tech-list span {
+  display: inline-block; padding: 0.3rem 1rem;
+  font-size: 0.8rem; border: 1px solid var(--border);
+  border-radius: 100px; background: var(--surface);
+  color: var(--text-secondary);
+}
+.glossary { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.4rem 2rem; }
+.glossary-item { margin-bottom: 0.75rem; }
+.glossary-item dt { font-weight: 600; font-size: 0.9rem; display: inline; }
+.glossary-item dd { font-size: 0.85rem; color: var(--text-secondary); display: inline; margin-left: 0.25rem; }
+@media (max-width: 768px) {
+  nav .links a { padding: 0 0.6rem; font-size: 0.75rem; }
+  .page-title h1 { font-size: 1.8rem; }
+  .page-title { padding: 2rem 0 1.5rem; }
+  main { padding: 72px 1.25rem 4rem; }
+  .two-col { grid-template-columns: 1fr; gap: 1.5rem; }
+  .pipeline { flex-direction: column; }
+  .pipe-stage + .pipe-stage { border-left: none; border-top: 1px solid var(--line); }
+}

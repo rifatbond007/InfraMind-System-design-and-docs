@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pipeline — InfraMind</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="index.html" class="brand">InfraMind</a>
+    <div class="links">
+      <a href="index.html" class="">Overview</a>
+      <a href="architecture.html" class="">Architecture</a>
+      <a href="pipeline.html" class=" active">Pipeline</a>
+      <a href="ingestion.html" class="">Ingestion</a>
+      <a href="detection.html" class="">Detection</a>
+      <a href="rca.html" class="">Root Cause</a>
+      <a href="alerting.html" class="">Alerting</a>
+      <a href="decisions.html" class="">Decisions</a>
+    </div>
+  </div>
+</nav>
+<main>
+<div class="container">
+
+
+  <div class="page-title">
+    <h1>Pipeline Design</h1>
+    <p class="sub">How signals flow through the system — from raw telemetry to structured incidents.</p>
+  </div>
+
+  <section>
+    <h2 class="section-title">How Signals Flow Through the System</h2>
+    <hr class="section-divider">
+    <div class="section-body">
+      <p>Every signal — whether a log line, a metric datapoint, a trace span, or an incoming PagerDuty alert — follows the same path through the pipeline. The design prioritizes <strong>graceful degradation</strong>: loss of any single data source must not crash the pipeline, and the event bus provides buffering against downstream processing delays.</p>
+    </div>
+    <div class="figure">
+      <img src="../assets/Pasted%20image%20(4).png" alt="Architecture detail view">
+      <div class="label">Figure 3: Component interaction within each pipeline stage — how collectors, correlators, detectors, and alerters connect internally</div>
+    </div>
+    <div class="section-body">
+      <p>Each pipeline stage receives normalized signals from the event bus, processes them through a stage-specific component, and publishes results back to the bus. This decoupling means a slow RCA computation never blocks alert delivery — the alerting stage can emit immediately from the incident assembled by the detection stage while RCA runs asynchronously.</p>
+    </div>
+    <div class="figure">
+      <img src="../assets/Pasted%20image%20(5).png" alt="Data flow diagram">
+      <div class="label">Figure 4: Data flow — each signal type enters through a dedicated collector, is parsed and normalized, then published to the shared event bus for downstream correlation</div>
+    </div>
+    <div class="two-col">
+      <div class="col">
+        <h4>Design Characteristics</h4>
+        <ul>
+          <li>At-least-once delivery guarantees for alerts</li>
+          <li>Configurable time windows for signal correlation</li>
+          <li>Modular collectors — adding a new source means implementing one interface</li>
+          <li>Per-signal-type statistical anomaly models</li>
+          <li>Async LLM reasoning — alert fires immediately, RCA summary follows</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Non-Goals (v1)</h4>
+        <ul>
+          <li>Automated remediation or auto-healing</li>
+          <li>Custom APM agent instrumentation</li>
+          <li>Full production deployment (research prototype)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+</main>
+</body>
+</html>
