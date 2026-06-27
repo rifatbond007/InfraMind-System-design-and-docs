@@ -459,7 +459,7 @@ section { margin-bottom: 6rem; }
     <p>InfraMind sits between existing observability tooling and on-call engineers. Rather than replacing Prometheus, ELK, or Datadog, it <strong>consumes their outputs</strong> — the signals those tools already generate — and applies a correlation-and-reasoning layer on top. The result is a single pane of glass that doesn't just show raw telemetry, but tells you what broke, why, and who is affected.</p>
   </div>
   <div class="figure">
-    <img src="../assets/Pasted%20image.png" alt="System overview diagram">
+    <img src="assets/Pasted%20image.png" alt="System overview diagram">
     <div class="label">Figure 1: High-level system concept — InfraMind as the correlation and reasoning layer above existing observability stacks</div>
   </div>
 </section>
@@ -480,7 +480,7 @@ section { margin-bottom: 6rem; }
     <div class="pipe-stage"><span class="icon">⊡</span><h5>Stage 5</h5><p>Alerting</p></div>
   </div>
   <div class="figure">
-    <img src="../assets/Pasted%20image%20(3).png" alt="System architecture diagram">
+    <img src="assets/Pasted%20image%20(3).png" alt="System architecture diagram">
     <div class="label">Figure 2: Five-stage pipeline architecture showing component boundaries and data flow</div>
   </div>
   <div class="arch-svg">
@@ -506,14 +506,14 @@ section { margin-bottom: 6rem; }
     <p>Every signal — whether a log line, a metric datapoint, a trace span, or an incoming PagerDuty alert — follows the same path through the pipeline. The design prioritizes <strong>graceful degradation</strong>: loss of any single data source must not crash the pipeline, and the event bus provides buffering against downstream processing delays.</p>
   </div>
   <div class="figure">
-    <img src="../assets/Pasted%20image%20(4).png" alt="Architecture detail view">
+    <img src="assets/Pasted%20image%20(4).png" alt="Architecture detail view">
     <div class="label">Figure 3: Component interaction within each pipeline stage — how collectors, correlators, detectors, and alerters connect internally</div>
   </div>
   <div class="section-body">
     <p>Each pipeline stage receives normalized signals from the event bus, processes them through a stage-specific component, and publishes results back to the bus. This decoupling means a slow RCA computation never blocks alert delivery — the alerting stage can emit immediately from the incident assembled by the detection stage while RCA runs asynchronously.</p>
   </div>
   <div class="figure">
-    <img src="../assets/Pasted%20image%20(5).png" alt="Data flow diagram">
+    <img src="assets/Pasted%20image%20(5).png" alt="Data flow diagram">
     <div class="label">Figure 4: Data flow — each signal type enters through a dedicated collector, is parsed and normalized, then published to the shared event bus for downstream correlation</div>
   </div>
   <div class="two-col">
@@ -553,7 +553,7 @@ section { margin-bottom: 6rem; }
     <div class="card"><span class="icon">⊡</span><h4>Alert Consumer</h4><p>Receives webhook payloads from PagerDuty and Grafana. Normalizes every alert to a unified internal schema (service, severity, description, timestamp). Implements adaptive back-pressure for high-volume spikes.</p></div>
   </div>
   <div class="figure">
-    <img src="../assets/Pasted%20image%20(6).png" alt="Ingestion layer diagram">
+    <img src="assets/Pasted%20image%20(6).png" alt="Ingestion layer diagram">
     <div class="label">Figure 5: Ingestion layer — four collector types, each feeding the shared event bus</div>
   </div>
 </section>
@@ -573,14 +573,14 @@ section { margin-bottom: 6rem; }
     <div class="card"><span class="icon">⊞</span><h4>Incident Assembler</h4><p>Combines correlated anomalous signals into an Incident object. Deduplicates overlapping detections and assigns a severity score based on signal criticality and blast radius potential.</p></div>
   </div>
   <div class="figure">
-    <img src="../assets/Pasted%20image%20(7).png" alt="Correlation engine diagram">
+    <img src="assets/Pasted%20image%20(7).png" alt="Correlation engine diagram">
     <div class="label">Figure 6: Cross-pillar correlation — the correlator groups signals by service identity, infrastructure layer, and time window, then passes each group to the anomaly detectors</div>
   </div>
   <div class="section-body">
     <p>Correlation is the key innovation that distinguishes InfraMind from single-pillar monitoring. By constraining signal grouping to services with known dependency relationships (from the trace-derived graph), the system avoids false positives from coincident-but-unrelated anomalies — a metric spike and a log flood that share no service lineage are kept separate.</p>
   </div>
   <div class="figure">
-    <img src="../assets/Pasted%20image%20(8).png" alt="Anomaly detection visualization">
+    <img src="assets/Pasted%20image%20(8).png" alt="Anomaly detection visualization">
     <div class="label">Figure 7: Anomaly detection — different statistical models run per signal type: EWMA for metrics, frequency analysis for logs, latency regression for traces. Signals crossing configurable thresholds are flagged as anomalous.</div>
   </div>
 </section>
@@ -608,11 +608,11 @@ section { margin-bottom: 6rem; }
     </div>
   </div>
   <div class="figure">
-    <img src="../assets/Pasted%20image%20(9).png" alt="RCA engine architecture">
+    <img src="assets/Pasted%20image%20(9).png" alt="RCA engine architecture">
     <div class="label">Figure 8: RCA engine — dependency graph traversal with evidence aggregation and AI reasoning</div>
   </div>
   <div class="figure">
-    <img src="../assets/Pasted%20image%20(10).png" alt="RCA output example">
+    <img src="assets/Pasted%20image%20(10).png" alt="RCA output example">
     <div class="label">Figure 9: Example RCA output — ranked root cause candidates with signal evidence and blast radius</div>
   </div>
 </section>
@@ -632,14 +632,14 @@ section { margin-bottom: 6rem; }
     <div class="card"><span class="icon">◈</span><h4>Notification Dispatchers</h4><p>Pluggable adapters for Slack, PagerDuty, email, and generic webhooks. Adding a channel means implementing a small adapter interface — no pipeline changes needed.</p></div>
   </div>
   <div class="figure">
-    <img src="../assets/Pasted%20image%20(11).png" alt="Alerting pipeline flow">
+    <img src="assets/Pasted%20image%20(11).png" alt="Alerting pipeline flow">
     <div class="label">Figure 10: Alerting pipeline — incidents flow through deduplication, severity routing, payload assembly, and notification dispatch</div>
   </div>
   <div class="section-body">
     <p>The alerting stage is designed for <strong>low latency</strong> — the structured alert (service, severity, affected services, evidence summary) fires immediately. The AI-generated RCA narrative, which may take longer to produce, appends to the alert as a follow-up. This split ensures on-call engineers get the critical context within seconds while the richer analysis arrives within the two-minute SLA.</p>
   </div>
   <div class="figure">
-    <img src="../assets/Pasted%20image%20(12).png" alt="Alert notification example">
+    <img src="assets/Pasted%20image%20(12).png" alt="Alert notification example">
     <div class="label">Figure 11: Alert notification example — a structured incident payload as it appears in Slack and PagerDuty, with severity, affected services, RCA summary, and runbook link</div>
   </div>
 </section>
@@ -676,7 +676,7 @@ section { margin-bottom: 6rem; }
     <p><strong>Decision:</strong> Open — to be determined during implementation. A sidecar model (deploy InfraMind inside each cloud account) avoids cross-account networking and API rate limits, but a central collector is simpler to manage. The collector adapter interface supports either approach.</p>
   </div>
   <div class="figure">
-    <img src="../assets/Pasted%20image%20(2).png" alt="Problem space diagram">
+    <img src="assets/Pasted%20image%20(2).png" alt="Problem space diagram">
     <div class="label">Figure 12: The four observability failures InfraMind is designed to solve</div>
   </div>
 </section>
