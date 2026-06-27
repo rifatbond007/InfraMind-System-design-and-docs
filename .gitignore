@@ -1,1 +1,3 @@
 .puku/
+node_modules/
+dist/
