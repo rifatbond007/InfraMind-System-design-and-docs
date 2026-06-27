@@ -6,40 +6,40 @@
 <title>InfraMind — System Design</title>
 <style>
 :root {
-  --bg: #fafafa;
+  --bg: #ffffff;
   --surface: #ffffff;
-  --border: #d4d4d4;
-  --text: #111111;
-  --text-secondary: #555555;
+  --border: #000000;
+  --text: #000000;
+  --text-secondary: #444444;
   --text-tertiary: #888888;
   --accent: #000000;
-  --line: #e5e5e5;
+  --line: #000000;
+  --shadow: 6px 6px 0 rgba(0,0,0,1);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Space Mono", "Courier New", "IBM Plex Mono", monospace;
   background: var(--bg);
   color: var(--text);
-  line-height: 1.7;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
   display: flex;
   justify-content: center;
-}
-
-/* --- Centered wrapper --- */
-.wrapper {
-  display: flex;
-  width: 100%;
-  max-width: 1160px;
   min-height: 100vh;
 }
 
-/* --- Right sidebar nav --- */
+/* --- Wrapper: sidebar | content --- */
+.wrapper {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  min-height: 100vh;
+}
+
+/* --- Left sidebar nav (brutalist) --- */
 nav {
-  order: 2;
-  width: 200px;
+  order: 0;
+  width: 220px;
   flex-shrink: 0;
   position: sticky;
   top: 0;
@@ -48,109 +48,297 @@ nav {
   flex-direction: column;
   justify-content: center;
   padding: 2rem 0;
+  border-right: 4px solid var(--accent);
 }
 nav .nav-inner {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.25rem;
-  padding-left: 1.5rem;
-  border-left: 1px solid var(--line);
+  gap: 0.15rem;
+  padding: 0 1.5rem;
 }
-nav a {
+nav .brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 3px solid var(--accent);
+  display: inline-block;
+  box-shadow: var(--shadow);
+}
+nav a.nav-link {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--text-secondary);
   text-decoration: none;
-  padding: 0.35rem 0;
-  transition: all 0.15s;
-  letter-spacing: 0.01em;
+  padding: 0.4rem 0;
+  transition: all 0.1s;
+  border-bottom: 2px solid transparent;
 }
-nav a:hover { color: var(--text); }
-nav a.active {
+nav a.nav-link:hover { color: var(--text); padding-left: 4px; }
+nav a.nav-link.active {
   color: var(--accent);
-  font-weight: 600;
+  border-bottom-color: var(--accent);
+  padding-left: 4px;
 }
 
 /* --- Main content --- */
 main {
-  order: 1;
   flex: 1;
   min-width: 0;
   padding: 3rem 4rem 6rem;
 }
-.container { max-width: 720px; margin: 0 auto; }
+.container { max-width: 680px; margin: 0 auto; }
+
+/* --- Brutalist Hero --- */
+.hero {
+  margin-bottom: 4rem;
+  padding: 0;
+  position: relative;
+}
+.hero .hero-box {
+  border: 4px solid var(--accent);
+  padding: 2.5rem 2rem;
+  box-shadow: var(--shadow);
+  background: var(--surface);
+  margin-bottom: 1.5rem;
+}
+.hero .hero-box h1 {
+  font-size: 3.5rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  word-break: break-word;
+}
+.hero .hero-box .stripe {
+  display: block;
+  width: 60px;
+  height: 6px;
+  background: var(--accent);
+  margin: 1.25rem 0 0.75rem;
+  border: none;
+}
+.hero .hero-box .tagline {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 520px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.hero .badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.hero .badge {
+  display: inline-block;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 3px solid var(--accent);
+  color: var(--accent);
+  background: var(--surface);
+}
+
+.hero-stats {
+  display: flex;
+  gap: 0;
+  border: 4px solid var(--accent);
+  border-top: none;
+}
+.hero-stats .stat {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  border-right: 2px solid var(--accent);
+}
+.hero-stats .stat:last-child { border-right: none; }
+.hero-stats .stat strong {
+  display: block;
+  font-size: 1.1rem;
+  color: var(--text);
+  font-weight: 900;
+}
+
+/* --- Section titles --- */
+.section-stripe {
+  display: block;
+  width: 40px;
+  height: 5px;
+  background: var(--accent);
+  margin: 0 0 0.5rem 0;
+  border: none;
+}
 section { margin-bottom: 5rem; }
-
-/* --- Hero --- */
-.hero { text-align: center; padding: 2rem 0 3rem; border-bottom: 1px solid var(--line); margin-bottom: 4rem; }
-.hero h1 { font-size: 3rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 0.75rem; }
-.hero .tagline { font-size: 1.1rem; color: var(--text-secondary); max-width: 540px; margin: 0 auto 1.25rem; line-height: 1.6; }
-.hero .badges { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
-.hero .badge { display: inline-block; padding: 0.2rem 0.8rem; font-size: 0.75rem; border: 1px solid var(--border); border-radius: 100px; color: var(--text-secondary); background: var(--surface); }
-
-/* --- Section headings --- */
-.section-title { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
-.section-subtitle { font-size: 0.85rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.25rem; }
-.section-divider { width: 40px; height: 3px; background: var(--accent); margin: 1rem 0 1.5rem; border: none; }
-.section-body p { margin-bottom: 1rem; color: var(--text-secondary); }
-.section-body p strong { color: var(--text); font-weight: 600; }
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+.section-subtitle {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.25rem;
+}
+.section-body p { margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.95rem; }
+.section-body p strong { color: var(--text); font-weight: 700; }
 
 /* --- Figure --- */
-.figure { margin: 2.5rem auto; padding: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; text-align: center; }
+.figure {
+  margin: 2.5rem auto;
+  padding: 1rem;
+  background: var(--surface);
+  border: 4px solid var(--accent);
+}
 .figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
-.figure .label { margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-tertiary); }
+.figure .label {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 2px solid var(--accent);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+}
 
-/* --- Pipeline --- */
-.pipeline { display: flex; align-items: stretch; margin: 2rem 0; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); overflow-x: auto; }
-.pipe-stage { flex: 1; min-width: 120px; padding: 1.25rem 1rem; text-align: center; }
-.pipe-stage + .pipe-stage { border-left: 1px solid var(--line); }
-.pipe-stage .icon { font-size: 1.3rem; margin-bottom: 0.4rem; display: block; }
-.pipe-stage h5 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 0.25rem; }
-.pipe-stage p { font-size: 0.8rem; color: var(--text); margin: 0; }
+/* --- Pipeline bar --- */
+.pipeline {
+  display: flex;
+  align-items: stretch;
+  margin: 2rem 0;
+  border: 4px solid var(--accent);
+}
+.pipe-stage {
+  flex: 1;
+  min-width: 100px;
+  padding: 1rem 0.75rem;
+  text-align: center;
+  border-right: 2px solid var(--accent);
+}
+.pipe-stage:last-child { border-right: none; }
+.pipe-stage .icon { font-size: 1.5rem; display: block; margin-bottom: 0.3rem; }
+.pipe-stage h5 {
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  margin-bottom: 0.15rem;
+}
+.pipe-stage p { font-size: 0.75rem; font-weight: 600; color: var(--text); margin: 0; text-transform: uppercase; letter-spacing: 0.03em; }
 
 /* --- Cards --- */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; margin: 2rem 0; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1.5rem; transition: box-shadow 0.2s; }
-.card:hover { box-shadow: 0 2px 16px rgba(0,0,0,0.04); }
-.card .icon { font-size: 1.5rem; display: block; margin-bottom: 0.75rem; }
-.card h4 { font-size: 0.9rem; margin-bottom: 0.4rem; }
-.card p { font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.6; }
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+.card {
+  background: var(--surface);
+  border: 3px solid var(--accent);
+  padding: 1.25rem;
+  transition: box-shadow 0.15s;
+}
+.card:hover { box-shadow: var(--shadow); }
+.card .icon { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; }
+.card h4 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.4rem; }
+.card p { font-size: 0.8rem; color: var(--text-secondary); margin: 0; line-height: 1.5; }
 
 /* --- Arch SVG --- */
 .arch-svg { margin: 2rem 0; overflow-x: auto; }
-.arch-svg pre { display: inline-block; padding: 1.5rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace; font-size: 0.8rem; line-height: 1.6; color: var(--text-secondary); }
+.arch-svg pre {
+  display: inline-block;
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border: 4px solid var(--accent);
+  font-family: "Space Mono", "Courier New", monospace;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
 
 /* --- Two-col --- */
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0; }
-.two-col .col h4 { font-size: 0.9rem; margin-bottom: 0.5rem; }
-.two-col .col p, .two-col .col ul { font-size: 0.9rem; color: var(--text-secondary); }
+.two-col .col h4 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+.two-col .col p, .two-col .col ul { font-size: 0.85rem; color: var(--text-secondary); }
 .two-col .col ul { padding-left: 1.2rem; }
 .two-col .col li { margin-bottom: 0.3rem; }
 
-.decision { margin: 1.5rem 0; }
-.decision h4 { font-size: 1rem; margin-bottom: 0.3rem; }
-.decision .context { font-size: 0.85rem; color: var(--text-tertiary); margin-bottom: 0.4rem; }
-.decision p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
+.decision { margin: 1.5rem 0; border-left: 4px solid var(--accent); padding-left: 1.25rem; }
+.decision h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.15rem; }
+.decision .context { font-size: 0.7rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+.decision p { font-size: 0.85rem; color: var(--text-secondary); margin: 0; }
 
 .tech-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0; }
-.tech-list span { display: inline-block; padding: 0.3rem 1rem; font-size: 0.8rem; border: 1px solid var(--border); border-radius: 100px; background: var(--surface); color: var(--text-secondary); }
+.tech-list span {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 3px solid var(--accent);
+  background: var(--surface);
+  color: var(--text);
+}
 
-.glossary { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.4rem 2rem; }
-.glossary-item { margin-bottom: 0.75rem; }
-.glossary-item dt { font-weight: 600; font-size: 0.9rem; display: inline; }
-.glossary-item dd { font-size: 0.85rem; color: var(--text-secondary); display: inline; margin-left: 0.25rem; }
+.glossary { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.5rem 2rem; }
+.glossary-item { margin-bottom: 0.5rem; }
+.glossary-item dt { font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; display: inline; }
+.glossary-item dd { font-size: 0.8rem; color: var(--text-secondary); display: inline; margin-left: 0.25rem; }
 
-@media (max-width: 900px) {
-  .wrapper { flex-direction: column-reverse; }
-  nav { position: static; height: auto; width: 100%; padding: 0; border-bottom: 1px solid var(--border); background: var(--surface); }
-  nav .nav-inner { flex-direction: row; padding: 0.75rem 1rem; border-left: none; overflow-x: auto; gap: 1rem; }
-  nav a { white-space: nowrap; font-size: 0.75rem; padding: 0.25rem 0; }
+@media (max-width: 860px) {
+  body { flex-direction: column; }
+  nav {
+    position: static;
+    height: auto;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-right: none;
+    border-bottom: 4px solid var(--accent);
+    justify-content: flex-start;
+  }
+  nav .nav-inner {
+    flex-direction: row;
+    padding: 0;
+    overflow-x: auto;
+    gap: 1rem;
+    align-items: center;
+  }
+  nav .brand { margin-bottom: 0; flex-shrink: 0; font-size: 0.9rem; padding: 0.3rem 0.6rem; }
+  nav a.nav-link { font-size: 0.7rem; padding: 0.2rem 0; white-space: nowrap; }
   main { padding: 2rem 1.25rem 4rem; }
-  .hero h1 { font-size: 2rem; }
+  .hero .hero-box h1 { font-size: 2.2rem; }
   .two-col { grid-template-columns: 1fr; gap: 1.5rem; }
   .pipeline { flex-direction: column; }
-  .pipe-stage + .pipe-stage { border-left: none; border-top: 1px solid var(--line); }
+  .pipe-stage { border-right: none; border-bottom: 2px solid var(--accent); }
+  .pipe-stage:last-child { border-bottom: none; }
 }
 </style>
 </head>
@@ -159,14 +347,15 @@ section { margin-bottom: 5rem; }
 
 <nav>
   <div class="nav-inner">
-    <a href="#overview" class="active">Overview</a>
-    <a href="#architecture">Architecture</a>
-    <a href="#pipeline">Pipeline</a>
-    <a href="#ingestion">Ingestion</a>
-    <a href="#detection">Detection</a>
-    <a href="#rca">Root Cause</a>
-    <a href="#alerting">Alerting</a>
-    <a href="#decisions">Decisions</a>
+    <a href="#overview" class="brand">InfraMind</a>
+    <a href="#overview" class="nav-link active">Overview</a>
+    <a href="#architecture" class="nav-link">Architecture</a>
+    <a href="#pipeline" class="nav-link">Pipeline</a>
+    <a href="#ingestion" class="nav-link">Ingestion</a>
+    <a href="#detection" class="nav-link">Detection</a>
+    <a href="#rca" class="nav-link">Root Cause</a>
+    <a href="#alerting" class="nav-link">Alerting</a>
+    <a href="#decisions" class="nav-link">Decisions</a>
   </div>
 </nav>
 
@@ -176,18 +365,28 @@ section { margin-bottom: 5rem; }
 <!-- OVERVIEW -->
 <section id="overview">
   <div class="hero">
-    <h1>InfraMind</h1>
-    <p class="tagline">An intelligent observability layer that correlates logs, metrics, traces, and alerts across heterogeneous infrastructure to detect incidents, identify root causes, and deliver actionable context — autonomously.</p>
+    <div class="hero-box">
+      <h1>InfraMind</h1>
+      <span class="stripe"></span>
+      <p class="tagline">An intelligent observability layer that correlates logs, metrics, traces, and alerts across heterogeneous infrastructure to detect incidents, identify root causes, and deliver actionable context — autonomously.</p>
+    </div>
     <div class="badges">
       <span class="badge">Kubernetes</span>
       <span class="badge">AWS / GCP / Azure</span>
       <span class="badge">Microservices</span>
       <span class="badge">Traditional VMs</span>
     </div>
+    <div class="hero-stats">
+      <div class="stat"><strong>&lt; 60s</strong>MTTD</div>
+      <div class="stat"><strong>&gt; 80%</strong>Precision</div>
+      <div class="stat"><strong>&gt; 75%</strong>Recall</div>
+      <div class="stat"><strong>&gt; 70%</strong>RCA Accuracy</div>
+    </div>
   </div>
+
+  <span class="section-stripe"></span>
   <p class="section-subtitle">System Design</p>
   <h2 class="section-title">A Signal-Aware Observability Layer</h2>
-  <hr class="section-divider">
   <div class="section-body">
     <p>InfraMind sits between existing observability tooling and on-call engineers. Rather than replacing Prometheus, ELK, or Datadog, it <strong>consumes their outputs</strong> — the signals those tools already generate — and applies a correlation-and-reasoning layer on top. The result is a single pane of glass that doesn't just show raw telemetry, but tells you what broke, why, and who is affected.</p>
   </div>
@@ -199,18 +398,18 @@ section { margin-bottom: 5rem; }
 
 <!-- ARCHITECTURE -->
 <section id="architecture">
+  <span class="section-stripe"></span>
   <p class="section-subtitle">Architecture</p>
   <h2 class="section-title">Five-Stage Pipeline</h2>
-  <hr class="section-divider">
   <div class="section-body">
     <p>The system is structured as a linear pipeline of five independently-deployable stages. Signals flow from left to right: raw telemetry enters the ingestion layer, passes through correlation and detection, is analyzed for root cause, and finally produces structured alerts. Each stage communicates over an internal event bus, which decouples producers from consumers and allows replay for offline evaluation.</p>
   </div>
   <div class="pipeline">
-    <div class="pipe-stage"><span class="icon">⤓</span><h5>Ingestion</h5><p>Logs, metrics, traces, alerts</p></div>
-    <div class="pipe-stage"><span class="icon">◎</span><h5>Correlation</h5><p>Normalize, group, enrich</p></div>
-    <div class="pipe-stage"><span class="icon">⚡</span><h5>Detection</h5><p>Anomaly detection &amp; assembly</p></div>
-    <div class="pipe-stage"><span class="icon">◉</span><h5>Root Cause</h5><p>Graph traversal &amp; AI reasoning</p></div>
-    <div class="pipe-stage"><span class="icon">⊡</span><h5>Alerting</h5><p>Dedup, route, dispatch</p></div>
+    <div class="pipe-stage"><span class="icon">⤓</span><h5>Stage 1</h5><p>Ingestion</p></div>
+    <div class="pipe-stage"><span class="icon">◎</span><h5>Stage 2</h5><p>Correlation</p></div>
+    <div class="pipe-stage"><span class="icon">⚡</span><h5>Stage 3</h5><p>Detection</p></div>
+    <div class="pipe-stage"><span class="icon">◉</span><h5>Stage 4</h5><p>Root Cause</p></div>
+    <div class="pipe-stage"><span class="icon">⊡</span><h5>Stage 5</h5><p>Alerting</p></div>
   </div>
   <div class="figure">
     <img src="../assets/Pasted%20image%20(3).png" alt="System architecture diagram">
@@ -232,9 +431,9 @@ section { margin-bottom: 5rem; }
 
 <!-- PIPELINE -->
 <section id="pipeline">
+  <span class="section-stripe"></span>
   <p class="section-subtitle">Pipeline Design</p>
   <h2 class="section-title">How Signals Flow Through the System</h2>
-  <hr class="section-divider">
   <div class="section-body">
     <p>Every signal — whether a log line, a metric datapoint, a trace span, or an incoming PagerDuty alert — follows the same path through the pipeline. The design prioritizes <strong>graceful degradation</strong>: loss of any single data source must not crash the pipeline, and the event bus provides buffering against downstream processing delays.</p>
   </div>
@@ -273,9 +472,9 @@ section { margin-bottom: 5rem; }
 
 <!-- INGESTION -->
 <section id="ingestion">
+  <span class="section-stripe"></span>
   <p class="section-subtitle">Stage 1</p>
   <h2 class="section-title">Ingestion Layer</h2>
-  <hr class="section-divider">
   <div class="section-body">
     <p>Four parallel collectors — each specialized for a signal type — pull or receive data from existing observability tools. Every collector enriches its output with a common <strong>service identifier</strong>, an <strong>infrastructure layer tag</strong> (k8s / cloud / microservice / vm), and a wall-clock timestamp before publishing to the event bus. This normalized envelope is what allows downstream stages to correlate across pillars that were never designed to work together.</p>
   </div>
@@ -293,9 +492,9 @@ section { margin-bottom: 5rem; }
 
 <!-- DETECTION -->
 <section id="detection">
+  <span class="section-stripe"></span>
   <p class="section-subtitle">Stages 2 &amp; 3</p>
   <h2 class="section-title">Correlation &amp; Detection Engine</h2>
-  <hr class="section-divider">
   <div class="section-body">
     <p>This is where raw signals become structured incidents. The correlation engine groups related signals across pillars using a combination of <strong>service identity</strong>, <strong>infrastructure layer</strong>, and <strong>time proximity</strong>. Once grouped, per-signal-type anomaly detectors evaluate each group for statistically significant deviations. Signals that cross a configurable threshold are assembled into an <strong>Incident</strong> — a structured object with a unique ID, severity score (Critical / Warning / Info), and a list of contributing signals.</p>
   </div>
@@ -320,9 +519,9 @@ section { margin-bottom: 5rem; }
 
 <!-- RCA -->
 <section id="rca">
+  <span class="section-stripe"></span>
   <p class="section-subtitle">Stage 4</p>
   <h2 class="section-title">Root Cause Analysis Engine</h2>
-  <hr class="section-divider">
   <div class="section-body">
     <p>Once an incident is assembled, the RCA engine answers the question that monitoring tools cannot: <strong>why did this happen?</strong> It combines three complementary approaches: structural reasoning via the service dependency graph, temporal correlation with change events, and optional AI-driven synthesis using a large language model.</p>
   </div>
@@ -352,9 +551,9 @@ section { margin-bottom: 5rem; }
 
 <!-- ALERTING -->
 <section id="alerting">
+  <span class="section-stripe"></span>
   <p class="section-subtitle">Stage 5</p>
   <h2 class="section-title">Alerting Pipeline</h2>
-  <hr class="section-divider">
   <div class="section-body">
     <p>The final stage transforms an incident + RCA bundle into a notification that on-call engineers can act on. The pipeline enforces strict latency targets — <strong>&lt;60 seconds</strong> from signal ingestion to alert emission for Critical incidents — through a combination of deduplication, severity-based routing, and lightweight payload assembly. The RCA summary (which may take longer to generate) is delivered as a follow-up.</p>
   </div>
@@ -379,9 +578,9 @@ section { margin-bottom: 5rem; }
 
 <!-- DECISIONS -->
 <section id="decisions">
+  <span class="section-stripe"></span>
   <p class="section-subtitle">Key Decisions</p>
   <h2 class="section-title">Architecture &amp; Design Choices</h2>
-  <hr class="section-divider">
   <div class="section-body"><p>Every system design involves trade-offs. Below are the most significant decisions that shape InfraMind's architecture, along with the reasoning behind them and the alternatives considered.</p></div>
   <div class="decision">
     <h4>Event Streaming Backbone</h4>
@@ -415,34 +614,34 @@ section { margin-bottom: 5rem; }
 </section>
 
 <section>
+  <span class="section-stripe"></span>
   <p class="section-subtitle">Technology</p>
   <h2 class="section-title">Target Stack &amp; Integrations</h2>
-  <hr class="section-divider">
   <div class="section-body"><p>InfraMind is designed to integrate with existing tooling, not replace it. Each connector is a modular adapter — adding support for a new tool means implementing a standard interface.</p></div>
-  <h4 style="margin-top:1.5rem;margin-bottom:0.25rem">Data Sources</h4>
+  <h4 style="margin-top:1.5rem;margin-bottom:0.25rem;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary)">Data Sources</h4>
   <div class="tech-list">
-    <span>ELK (Elasticsearch)</span><span>Loki</span><span>Prometheus</span><span>Datadog</span>
-    <span>Jaeger</span><span>OpenTelemetry</span><span>PagerDuty</span><span>Grafana Alerts</span>
+    <span>ELK</span><span>Loki</span><span>Prometheus</span><span>Datadog</span>
+    <span>Jaeger</span><span>OpenTelemetry</span><span>PagerDuty</span><span>Grafana</span>
   </div>
-  <h4 style="margin-top:1rem;margin-bottom:0.25rem">Infrastructure Targets</h4>
+  <h4 style="margin-top:1rem;margin-bottom:0.25rem;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary)">Infrastructure</h4>
   <div class="tech-list">
-    <span>Kubernetes</span><span>AWS (CloudWatch, FIS)</span><span>GCP (Cloud Monitoring)</span>
-    <span>Azure Monitor</span><span>Microservices (K8s)</span><span>Traditional VMs</span>
+    <span>Kubernetes</span><span>AWS</span><span>GCP</span>
+    <span>Azure</span><span>Microservices</span><span>VMs</span>
   </div>
-  <h4 style="margin-top:1rem;margin-bottom:0.25rem">Delivery Channels</h4>
+  <h4 style="margin-top:1rem;margin-bottom:0.25rem;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary)">Channels</h4>
   <div class="tech-list">
     <span>Slack</span><span>PagerDuty</span><span>Webhook</span><span>Email</span>
   </div>
-  <h4 style="margin-top:1rem;margin-bottom:0.25rem">Evaluation Tooling</h4>
+  <h4 style="margin-top:1rem;margin-bottom:0.25rem;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary)">Evaluation</h4>
   <div class="tech-list">
-    <span>Chaos Mesh</span><span>AWS Fault Injection Simulator</span><span>Google Online Boutique</span>
+    <span>Chaos Mesh</span><span>AWS FIS</span><span>Online Boutique</span>
   </div>
 </section>
 
 <section>
+  <span class="section-stripe"></span>
   <p class="section-subtitle">Reference</p>
   <h2 class="section-title">Glossary</h2>
-  <hr class="section-divider">
   <dl class="glossary">
     <div class="glossary-item"><dt>InfraMind</dt><dd>Automated incident detection, RCA, and alerting system.</dd></div>
     <div class="glossary-item"><dt>MTTD</dt><dd>Mean Time to Detect — time from incident start to first alert.</dd></div>
@@ -462,14 +661,14 @@ section { margin-bottom: 5rem; }
 
 <script>
 (function() {
-  const links = document.querySelectorAll('nav a');
+  const links = document.querySelectorAll('nav a.nav-link');
   const sections = document.querySelectorAll('section[id]');
   let ticking = false;
 
   function update() {
     let current = 'overview';
     const scrollY = window.scrollY;
-    const offset = window.innerWidth <= 900 ? 80 : 10;
+    const offset = window.innerWidth <= 860 ? 80 : 10;
     sections.forEach(s => {
       if (scrollY >= s.offsetTop - offset) current = s.id;
     });
