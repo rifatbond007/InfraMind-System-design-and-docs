@@ -14,7 +14,7 @@
   --text-tertiary: #888888;
   --accent: #000000;
   --line: #000000;
-  --shadow: 6px 6px 0 rgba(0,0,0,1);
+  --shadow: 3px 3px 0 rgba(0,0,0,1);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -48,7 +48,7 @@ nav {
   flex-direction: column;
   justify-content: center;
   padding: 2rem 0;
-  border-right: 4px solid var(--accent);
+  border-right: 2px solid var(--accent);
 }
 nav .nav-inner {
   display: flex;
@@ -66,7 +66,7 @@ nav .brand {
   color: var(--text);
   margin-bottom: 1.5rem;
   padding: 0.5rem 0.75rem;
-  border: 3px solid var(--accent);
+  border: 2px solid var(--accent);
   display: inline-block;
   box-shadow: var(--shadow);
 }
@@ -104,7 +104,7 @@ main {
   position: relative;
 }
 .hero .hero-box {
-  border: 4px solid var(--accent);
+  border: 2px solid var(--accent);
   padding: 2.5rem 2rem;
   box-shadow: var(--shadow);
   background: var(--surface);
@@ -122,9 +122,9 @@ main {
 .hero .hero-box .stripe {
   display: block;
   width: 60px;
-  height: 6px;
+  height: 4px;
   background: var(--accent);
-  margin: 1.25rem 0 0.75rem;
+  margin: 1rem 0 0.75rem;
   border: none;
 }
 .hero .hero-box .tagline {
@@ -148,7 +148,7 @@ main {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  border: 3px solid var(--accent);
+  border: 2px solid var(--accent);
   color: var(--accent);
   background: var(--surface);
 }
@@ -156,7 +156,7 @@ main {
 .hero-stats {
   display: flex;
   gap: 0;
-  border: 4px solid var(--accent);
+  border: 2px solid var(--accent);
   border-top: none;
 }
 .hero-stats .stat {
@@ -182,7 +182,7 @@ main {
 .section-stripe {
   display: block;
   width: 40px;
-  height: 5px;
+  height: 3px;
   background: var(--accent);
   margin: 0 0 0.5rem 0;
   border: none;
@@ -211,7 +211,7 @@ section { margin-bottom: 5rem; }
   margin: 2.5rem auto;
   padding: 1rem;
   background: var(--surface);
-  border: 4px solid var(--accent);
+  border: 2px solid var(--accent);
 }
 .figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
 .figure .label {
@@ -230,7 +230,7 @@ section { margin-bottom: 5rem; }
   display: flex;
   align-items: stretch;
   margin: 2rem 0;
-  border: 4px solid var(--accent);
+  border: 2px solid var(--accent);
 }
 .pipe-stage {
   flex: 1;
@@ -260,7 +260,7 @@ section { margin-bottom: 5rem; }
 }
 .card {
   background: var(--surface);
-  border: 3px solid var(--accent);
+  border: 2px solid var(--accent);
   padding: 1.25rem;
   transition: box-shadow 0.15s;
 }
@@ -275,7 +275,7 @@ section { margin-bottom: 5rem; }
   display: inline-block;
   padding: 1.25rem 1.5rem;
   background: var(--surface);
-  border: 4px solid var(--accent);
+  border: 2px solid var(--accent);
   font-family: "Space Mono", "Courier New", monospace;
   font-size: 0.7rem;
   line-height: 1.5;
@@ -290,7 +290,7 @@ section { margin-bottom: 5rem; }
 .two-col .col ul { padding-left: 1.2rem; }
 .two-col .col li { margin-bottom: 0.3rem; }
 
-.decision { margin: 1.5rem 0; border-left: 4px solid var(--accent); padding-left: 1.25rem; }
+.decision { margin: 1.5rem 0; border-left: 2px solid var(--accent); padding-left: 1.25rem; }
 .decision h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.15rem; }
 .decision .context { font-size: 0.7rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
 .decision p { font-size: 0.85rem; color: var(--text-secondary); margin: 0; }
@@ -303,7 +303,7 @@ section { margin-bottom: 5rem; }
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border: 3px solid var(--accent);
+  border: 2px solid var(--accent);
   background: var(--surface);
   color: var(--text);
 }
@@ -321,7 +321,7 @@ section { margin-bottom: 5rem; }
     width: 100%;
     padding: 0.75rem 1rem;
     border-right: none;
-    border-bottom: 4px solid var(--accent);
+    border-bottom: 2px solid var(--accent);
     justify-content: flex-start;
   }
   nav .nav-inner {
