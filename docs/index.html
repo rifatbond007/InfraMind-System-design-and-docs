@@ -56,7 +56,8 @@ nav .nav-inner {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 0 1.5rem;
+  padding: 0 0 0 1.5rem;
+  align-items: flex-end;
 }
 nav .brand {
   font-size: 1.1rem;
@@ -332,7 +333,7 @@ section { margin-bottom: 6rem; }
 /* --- Tablet: narrow sidebar, smaller text --- */
 @media (max-width: 1024px) {
   nav { width: 180px; }
-  nav .nav-inner { padding: 0 1rem; }
+  nav .nav-inner { padding: 0 0 0 1rem; }
   nav .brand { font-size: 0.9rem; padding: 0.4rem 0.6rem; }
   nav a.nav-link { font-size: 0.6rem; padding: 0.35rem 0.5rem; letter-spacing: 0.08em; }
   main { padding: 3rem 3rem 6rem; }
@@ -359,6 +360,7 @@ section { margin-bottom: 6rem; }
     padding: 0;
     gap: 0.4rem;
     align-items: center;
+    justify-content: flex-start;
     width: 100%;
   }
   nav .brand {
