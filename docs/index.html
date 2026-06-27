@@ -139,11 +139,6 @@
     margin-top: 0.75rem;
     font-size: 0.8rem; color: var(--text-tertiary);
   }
-  .figure-row {
-    display: flex; gap: 1.5rem; margin: 2.5rem 0; flex-wrap: wrap;
-  }
-  .figure-row .figure { flex: 1; margin: 0; min-width: 260px; }
-
   /* --- Card Grid --- */
   .card-grid {
     display: grid;
@@ -231,7 +226,7 @@
     .hero { padding: 2.5rem 0 2rem; }
     main { padding: 72px 1.25rem 4rem; }
     .two-col { grid-template-columns: 1fr; gap: 1.5rem; }
-    .figure-row { flex-direction: column; }
+
     .pipeline { flex-direction: column; }
     .pipe-stage + .pipe-stage { border-left: none; border-top: 1px solid var(--line); }
   }
@@ -373,15 +368,24 @@
     </p>
   </div>
 
-  <div class="figure-row">
-    <div class="figure">
-      <img src="../assets/Pasted%20image%20(4).png" alt="Architecture detail view">
-      <div class="label">Figure 3: Component interaction within each pipeline stage</div>
-    </div>
-    <div class="figure">
-      <img src="../assets/Pasted%20image%20(5).png" alt="Data flow diagram">
-      <div class="label">Figure 4: Data flow — each signal type is parsed, normalized, and published to the event bus</div>
-    </div>
+  <div class="figure">
+    <img src="../assets/Pasted%20image%20(4).png" alt="Architecture detail view">
+    <div class="label">Figure 3: Component interaction within each pipeline stage — how collectors, correlators, detectors, and alerters connect internally</div>
+  </div>
+
+  <div class="section-body">
+    <p>
+      Each pipeline stage receives normalized signals from the event bus, processes them
+      through a stage-specific component, and publishes results back to the bus. This
+      decoupling means a slow RCA computation never blocks alert delivery — the alerting
+      stage can emit immediately from the incident assembled by the detection stage while
+      RCA runs asynchronously.
+    </p>
+  </div>
+
+  <div class="figure">
+    <img src="../assets/Pasted%20image%20(5).png" alt="Data flow diagram">
+    <div class="label">Figure 4: Data flow — each signal type enters through a dedicated collector, is parsed and normalized, then published to the shared event bus for downstream correlation</div>
   </div>
 
   <div class="two-col">
@@ -493,15 +497,24 @@
     </div>
   </div>
 
-  <div class="figure-row">
-    <div class="figure">
-      <img src="../assets/Pasted%20image%20(7).png" alt="Correlation engine diagram">
-      <div class="label">Figure 6: Cross-pillar correlation — signals grouped by service, layer, and time window</div>
-    </div>
-    <div class="figure">
-      <img src="../assets/Pasted%20image%20(8).png" alt="Anomaly detection visualization">
-      <div class="label">Figure 7: Anomaly detection models applied per signal type</div>
-    </div>
+  <div class="figure">
+    <img src="../assets/Pasted%20image%20(7).png" alt="Correlation engine diagram">
+    <div class="label">Figure 6: Cross-pillar correlation — the correlator groups signals by service identity, infrastructure layer (k8s / cloud / microservice / vm), and time window, then passes each group to the anomaly detectors</div>
+  </div>
+
+  <div class="section-body">
+    <p>
+      Correlation is the key innovation that distinguishes InfraMind from single-pillar
+      monitoring. By constraining signal grouping to services with known dependency
+      relationships (from the trace-derived graph), the system avoids false positives from
+      coincident-but-unrelated anomalies — a metric spike and a log flood that share no
+      service lineage are kept separate.
+    </p>
+  </div>
+
+  <div class="figure">
+    <img src="../assets/Pasted%20image%20(8).png" alt="Anomaly detection visualization">
+    <div class="label">Figure 7: Anomaly detection — different statistical models run per signal type: EWMA for metrics, frequency analysis for logs, latency regression for traces. Signals crossing configurable thresholds are flagged as anomalous.</div>
   </div>
 </section>
 
@@ -587,15 +600,24 @@
     </div>
   </div>
 
-  <div class="figure-row">
-    <div class="figure">
-      <img src="../assets/Pasted%20image%20(11).png" alt="Alerting pipeline flow">
-      <div class="label">Figure 10: Alert deduplication, routing, and dispatch flow</div>
-    </div>
-    <div class="figure">
-      <img src="../assets/Pasted%20image%20(12).png" alt="Alert notification example">
-      <div class="label">Figure 11: Structured alert notification reaching Slack and PagerDuty</div>
-    </div>
+  <div class="figure">
+    <img src="../assets/Pasted%20image%20(11).png" alt="Alerting pipeline flow">
+    <div class="label">Figure 10: Alerting pipeline — incidents flow through deduplication (cooldown window), severity routing (Critical → PagerDuty+Slack, Warning → Slack, Info → webhook), payload assembly, and finally notification dispatch</div>
+  </div>
+
+  <div class="section-body">
+    <p>
+      The alerting stage is designed for <strong>low latency</strong> — the structured alert
+      (service, severity, affected services, evidence summary) fires immediately. The
+      AI-generated RCA narrative, which may take longer to produce, appends to the alert as
+      a follow-up. This split ensures on-call engineers get the critical context within seconds
+      while the richer analysis arrives within the two-minute SLA.
+    </p>
+  </div>
+
+  <div class="figure">
+    <img src="../assets/Pasted%20image%20(12).png" alt="Alert notification example">
+    <div class="label">Figure 11: Alert notification example — a structured incident payload as it appears in Slack and PagerDuty, with severity, affected services, RCA summary, and runbook link</div>
   </div>
 </section>
 
