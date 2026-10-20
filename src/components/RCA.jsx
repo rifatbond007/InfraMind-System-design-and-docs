@@ -1,30 +1,49 @@
-import Figure from './Figure.jsx'
+import { Section, Flow, PlanBuilt, Details, Bullets, OriginalFigure } from './ui.jsx'
 
 export default function RCA() {
   return (
-    <section id="rca">
-      <span className="section-stripe"></span>
-      <p className="section-subtitle">Stage 4</p>
-      <h2 className="section-title">Root Cause Analysis Engine</h2>
-      <div className="section-body">
-        <p>Once an incident is assembled, the RCA engine answers the question that monitoring tools cannot: <strong>why did this happen?</strong> It combines three complementary approaches: structural reasoning via the service dependency graph, temporal correlation with change events, and optional AI-driven synthesis using a large language model.</p>
-      </div>
-      <div className="two-col">
-        <div className="col">
-          <h4>Dependency Graph Traversal</h4>
-          <p>Uses the service topology graph (built continuously from trace data) to walk upstream from the affected service. Each hop evaluates whether the dependency shows correlating symptoms, ranking candidates by probability.</p>
-          <h4>Change Correlation</h4>
-          <p>Cross-references incident timing against deployment events, Kubernetes rollouts, config map changes, and cloud provider incident feeds. A service that just deployed is a stronger candidate than one that hasn't changed in weeks.</p>
-        </div>
-        <div className="col">
-          <h4>Evidence Aggregation</h4>
-          <p>Collects supporting evidence from every pillar — specific log lines that show the error, metric charts with the anomaly, anomalous spans, and any triggering alerts — into a structured evidence bundle for each candidate root cause.</p>
-          <h4>AI Reasoning (Optional)</h4>
-          <p>LLM synthesis runs asynchronously to keep alert latency low. The structured alert fires immediately; the AI-generated natural-language summary appends within the 120-second SLA. Graceful degradation: if trace data is missing, the engine falls back to log + metric inference.</p>
-        </div>
-      </div>
-      <Figure src="assets/Pasted%20image%20(9).png" label="Figure 8: RCA engine — dependency graph traversal with evidence aggregation and AI reasoning" />
-      <Figure src="assets/Pasted%20image%20(10).png" label="Figure 9: Example RCA output — ranked root cause candidates with signal evidence and blast radius" />
-    </section>
+    <Section
+      id="rca"
+      eyebrow="Stage 4 · Phase P5 (next)"
+      title="Root cause analysis"
+      tags={[['planned', 'Not built yet'], ['changed', '3 spec conflicts']]}
+      summary="Designed in detail, no code yet: rca/ holds only a docstring and README. The input it needs, stream:graph-updates, is already being written by the Jaeger collector."
+    >
+      <Flow
+        caption="Planned pipeline. Ranking is deterministic; the LLM only explains the result (D1)."
+        w={134}
+        colGap={44}
+        nodes={[
+          { id: 'g', col: 0, row: 0, label: 'graph-updates', sub: 'stream, published today', status: 'built' },
+          { id: 'i', col: 0, row: 1, label: 'incidents', sub: 'stream, published today', status: 'built' },
+          { id: 'k', col: 0, row: 2, label: 'K8s API watch', sub: 'deploys, config', status: 'planned' },
+          { id: 'sg', col: 1, row: 0, label: 'ServiceGraph', sub: 'NetworkX DiGraph', status: 'planned' },
+          { id: 'w', col: 1, row: 1, label: 'Graph walk', sub: 'DFS to callees, depth 4', status: 'planned' },
+          { id: 'c', col: 1, row: 2, label: 'Change corr.', sub: '30-min pre-window', status: 'planned' },
+          { id: 'ev', col: 2, row: 1, label: 'Evidence bundle', sub: 'built before ranking', status: 'planned' },
+          { id: 'rk', col: 3, row: 1, label: 'Ranked candidates', sub: 'w1..w4 score', status: 'planned' },
+        ]}
+        edges={[['g', 'sg'], ['sg', 'w'], ['i', 'w'], ['k', 'c'], ['w', 'ev'], ['c', 'ev'], ['ev', 'rk']]}
+      />
+
+      <PlanBuilt planLabel="Planned (PRD v1.1)" rows={[
+        { name: 'Dependency graph', plan: 'Built from traces, static fallback', status: 'planned', built: 'Specified (D21): caller → callee edges, weight p95 × log(calls), EWMA α 0.1, edge needs 3 observations, decays, snapshot every 60 s.', where: 'rca/graph.py (planned)' },
+        { name: 'Graph walk', plan: 'Walk upstream from affected service', status: 'planned', built: 'Redefined (D2): failures flow callee → caller, so walk toward callees, depth-first, max depth 4.', where: 'rca/ (planned)' },
+        { name: 'Change correlation', plan: 'Deploys, rollouts, config maps, cloud feeds', status: 'planned', built: 'Specified (D22): K8s watch on 6 resource kinds, metadata only, never Secret values. No cloud feeds.', where: 'rca/ (planned)' },
+        { name: 'Ranking', plan: 'Rank candidates by probability', status: 'planned', built: 'score = w1·severity + w2·earliest onset + w3·depth + w4·change. Weights not chosen yet; tuned on dev split.', where: 'rca/ (planned)' },
+        { name: 'PageRank variant', plan: '—', status: 'planned', built: 'Personalised PageRank (α 0.85) as a sensitivity check and baseline.', where: 'rca/ (planned)' },
+      ]} />
+
+      <Details title="Spec conflicts to settle before coding">
+        <Bullets items={[
+          'change_correlation is {0, 1} in standard 06 but a float in [0, 1] in D22 and standard 14.',
+          'downstream_depth is described as "closer = higher score" but given the range [0, max_depth].',
+          'The proposal says the walk goes "upstream" with BFS and DFS; D2 says toward callees, DFS.',
+          'No numeric weights w1–w4 are defined anywhere yet.',
+        ]} />
+        <OriginalFigure src="assets/Pasted%20image%20(9).png" label="RCA engine: graph traversal, evidence aggregation, AI reasoning" />
+        <OriginalFigure src="assets/Pasted%20image%20(10).png" label="Example RCA output: ranked candidates with evidence and blast radius" />
+      </Details>
+    </Section>
   )
 }

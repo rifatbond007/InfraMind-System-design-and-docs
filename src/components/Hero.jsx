@@ -1,42 +1,80 @@
+import { Pill, Table, Details, OriginalFigure } from './ui.jsx'
+
+const phases = [
+  ['P0', 'Repo & tooling', 'built'],
+  ['P1', 'Testbed', 'built'],
+  ['P2', 'Signal schema + bus', 'built'],
+  ['P3', 'Ingestion', 'built'],
+  ['P4', 'Detection', 'built'],
+  ['P4b', 'Correlation', 'built'],
+  ['P5', 'RCA', 'planned'],
+  ['P5b', 'LLM explainer', 'planned'],
+  ['P6', 'Alerting + storage + API', 'planned'],
+  ['P7', 'Evaluation', 'planned'],
+  ['P8', 'Packaging (Helm)', 'planned'],
+  ['P9', 'Paper', 'planned'],
+]
+
 export default function Hero() {
   return (
     <section id="overview">
       <div className="hero">
         <div className="hero-box">
+          <span className="draft-badge">Build status · 21 Oct 2026</span>
           <h1>InfraMind</h1>
-          <span className="draft-badge">DRAFT v1.1</span>
           <span className="stripe"></span>
-          <p className="tagline">InfraMind: Automated Incident Detection, Root Cause Analysis &amp; Alerting System</p>
-        </div>
-        <div className="badges">
-          <span className="badge">Kubernetes</span>
-          <span className="badge">AWS / GCP / Azure</span>
-          <span className="badge">Microservices</span>
-          <span className="badge">Traditional VMs</span>
+          <p className="tagline">A Kubernetes-based multi-signal incident detection and graph-guided root cause analysis system.</p>
+          <p className="hero-goal">When a fault hits a Kubernetes microservice app, say which service is the root cause, show the evidence, and send <strong>one</strong> deduplicated alert.</p>
         </div>
         <div className="hero-stats">
-          <div className="stat"><strong>&lt; 60s</strong>MTTD</div>
-          <div className="stat"><strong>&gt; 80%</strong>Precision</div>
-          <div className="stat"><strong>&gt; 75%</strong>Recall</div>
-          <div className="stat"><strong>&gt; 70%</strong>RCA Accuracy</div>
+          <div className="stat"><strong>6 / 12</strong>phases done</div>
+          <div className="stat"><strong>509</strong>tests passing</div>
+          <div className="stat"><strong>22 s</strong>smoke detect<br/>(target &lt; 60 s)</div>
+          <div className="stat"><strong>0</strong>eval results yet</div>
         </div>
       </div>
-      <span className="section-stripe"></span>
-      <p className="section-subtitle">System Design</p>
-      <h2 className="section-title">A Signal-Aware Observability Layer</h2>
-      <div className="section-body">
-        <p>InfraMind sits between existing observability tooling and on-call engineers. Rather than replacing Prometheus, ELK, or Datadog, it <strong>consumes their outputs</strong> — the signals those tools already generate — and applies a correlation-and-reasoning layer on top. The result is a single pane of glass that doesn't just show raw telemetry, but tells you what broke, why, and who is affected.</p>
-      </div>
-      <Figure src="assets/Pasted%20image.png" label="Figure 1: High-level system concept — InfraMind as the correlation and reasoning layer above existing observability stacks" />
-    </section>
-  )
-}
 
-function Figure({ src, label }) {
-  return (
-    <div className="figure">
-      <img src={src} alt="" />
-      <div className="label">{label}</div>
-    </div>
+      <h3 className="h3">Progress by phase</h3>
+      <ol className="phases">
+        {phases.map(([id, name, s]) => (
+          <li key={id} className={'phase ' + s}>
+            <span className="phase-id">{id}</span>
+            <span className="phase-name">{name}</span>
+          </li>
+        ))}
+      </ol>
+      <p className="note">Done: the testbed, ingestion, detection and correlation (P0–P4b), all tested and verified live on the kind cluster. Next: P5 root cause analysis.</p>
+
+      <h3 className="h3">Research question</h3>
+      <p className="lede">Can ingesting and correlating logs, metrics, traces and alerts <strong>(1)</strong> cut mean time to detect, <strong>(2)</strong> reduce alert noise through dedup and correlation, and <strong>(3)</strong> give automated root cause analysis that speeds up diagnosis?</p>
+
+      <h3 className="h3">Success targets vs. current evidence</h3>
+      <Table
+        head={['Metric', 'Target (proposal)', 'Evidence today']}
+        className="targets"
+        rows={[
+          ['MTTD', '< 60 s', <><Pill status="changed">Smoke only</Pill> 22–28 s on a live burst (P4 gate)</>],
+          ['Alert precision', '≥ 75%', <Pill status="planned">P7</Pill>],
+          ['Alert recall', '≥ 70%', <Pill status="planned">P7</Pill>],
+          ['Noise reduction vs raw alerts', '≥ 40%', <><Pill status="changed">Smoke only</Pill> 6 incidents → 1 (unit test, not yet live)</>],
+          ['RCA exact / top-3', '≥ 60% / ≥ 75%', <Pill status="planned">RCA not built</Pill>],
+          ['RCA latency', '< 120 s', <Pill status="planned">RCA not built</Pill>],
+          ['False positive rate', '< 25%', <Pill status="planned">Soak run in P7</Pill>],
+          ['Fault scenarios', '≥ 10 (now ≥ 12)', <><Pill status="blocked">5 written, pod-kill verified</Pill></>],
+        ]}
+      />
+      <p className="note">Smoke-run numbers come from development gates on one machine. They are not evaluation results.</p>
+
+      <Details title="Scope: how the plan narrowed">
+        <p>The PRD v1.1 aimed at heterogeneous infrastructure: Kubernetes, AWS/GCP/Azure, microservices and VMs, fed by ELK, Datadog, PagerDuty and Kafka. The July 2026 proposal and decision D8 narrowed this to a <strong>Kubernetes-only research prototype</strong>:</p>
+        <ul>
+          <li>Out of scope: cloud providers, VMs, Datadog/PagerDuty, auto-remediation, production scale, deep-learning training, security-fault injection.</li>
+          <li>The system under test is Google's Online Boutique (11 services) on a local kind cluster.</li>
+          <li>The LLM only writes the explanation. It never chooses the root cause (D1).</li>
+        </ul>
+        <p>Team: Md. Rifat Hossain (testbed, chaos, evaluation, packaging), Abdullah All Moneem (ingestion, detection, correlation), Rayhan Islam Prome (RCA, LLM, alerting, storage). BSc capstone, BAIUST CSE. Supervisor: Golam Moktader Nayeem.</p>
+        <OriginalFigure src="assets/Pasted%20image.png" label="InfraMind as a correlation and reasoning layer above existing observability tools" />
+      </Details>
+    </section>
   )
 }

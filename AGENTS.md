@@ -2,28 +2,24 @@
 
 ## Repository type
 
-Design-document repo (pre-development). No code, no build/test/lint tooling.
+Documentation site for InfraMind. The implementation lives in the sibling repo `../infraMind`; this repo documents its design and build status for the research supervisor. Build tooling: Vite + React 18 (`npm run dev`, `npm run build` → `dist/`). No tests.
 
 ## What's here
 
-- **`docs/`** — `index.html` (monochrome documentation site with right-side nav, open in browser), `InfraMind_PRD_v1.1.pdf`, and per-section HTML pages (`architecture.html`, `pipeline.html`, `ingestion.html`, `detection.html`, `rca.html`, `alerting.html`, `decisions.html`) with shared `style.css`
-- **`docs/assets/`** — architecture diagrams and UI mockups (`Pasted image*.png`)
-- **`.puku/`** — Cline project knowledge store. Do not modify (excluded via `.gitignore`)
-- **`/`** — React single-page-app version of the docs (Vite + React 18):
-  - `package.json` — deps (react 18, react-dom, vite 6, @vitejs/plugin-react)
-  - `index.html` — Vite entry point
-  - `vite.config.js` — Vite + React plugin
-  - `src/main.jsx` — React entry (StrictMode + createRoot)
-  - `src/App.jsx` — layout wrapper (sticky sidebar nav + scroll-to-section)
-  - `src/index.css` — full brutalist stylesheet (373 lines, all breakpoints)
-  - `src/components/` — 11 components: Navbar, Hero, Figure, Architecture, PipelineDetail, Ingestion, Detection, RCA, Alerting, Decisions, TechStack, Glossary
-  - **`public/assets/`** — 12 PNG images (copied from `docs/assets/`)
-- **React app commands**: `npm run dev` (dev server), `npm run build` (production build → `dist/`)
+- **`src/`** — React single-page docs site:
+  - `App.jsx` — layout: sticky left nav + one reading column, scroll-tracked active link
+  - `components/Navbar.jsx` — nav, colour key and Light/Dark toggle (sets `data-theme` on `<html>`, saved in localStorage; `index.html` applies the saved theme before first paint)
+  - `index.css` — brutalist stylesheet: colour tokens on `:root` with dark-mode overrides, status colours (built / changed / blocked / planned / third-party), all breakpoints
+  - `components/ui.jsx` — shared primitives: `Section`, `Pill`, `PlanBuilt` table, `Table`, `Details` (folded), `Flow` (status-coloured SVG box diagram), `OriginalFigure`, `Bullets`
+  - `components/` — one file per section: Hero (overview), Decide (needs supervisor decision), Architecture, Testbed, Ingestion, Detection, Correlation, RCA, Alerting (explainer + alerting + storage), Evaluation, Decisions, TechStack, Glossary, Navbar
+- **`public/assets/`** — original design PNGs (copied from `docs/assets/`), shown inside "Details" as "Original design"
+- **`docs/`** — original PRD v1.1 PDF and the old pre-development static site (`index.html`), kept for reference
+- **`.puku/`** — Cline project knowledge store. Do not modify (git-ignored)
 
-## React app architecture
+## Writing rules
 
-- Brutalist design: black borders, Space Mono for headings/nav, off-white bg (#fcfcf7)
-- Single-page layout: left sidebar nav (vertical tabs, scroll-active tracking via requestAnimationFrame), main content area
-- All section content ported from `docs/index.html` verbatim
-- Images served from `/assets/...` (public/ directory, URL-encoded spaces)
-- Netlify deploy: set Publish directory to `dist/`, no special SPA config needed
+- Every section follows the same pattern: one-line summary with status pills → `Flow` diagram → `PlanBuilt` table → `Details` for depth. Keep the main view short.
+- The "Plan" column is PRD v1.1 unless labelled otherwise; note where the July 2026 proposal or a decision in `infraMind/docs/decision-tree.md` changed it.
+- Only state facts that are in the `infraMind` repo. Label development smoke-run numbers as such; there are no evaluation results yet.
+- Use the status vocabulary consistently: `built`, `changed`, `partial`, `blocked`, `planned`, `external`.
+- Colours only through CSS tokens so dark mode keeps working.

@@ -1,33 +1,45 @@
-import Figure from './Figure.jsx'
+import { Section, Flow, PlanBuilt, Details, Bullets, OriginalFigure } from './ui.jsx'
 
 export default function Alerting() {
   return (
-    <section id="alerting">
-      <span className="section-stripe"></span>
-      <p className="section-subtitle">Stage 5</p>
-      <h2 className="section-title">Alerting Pipeline</h2>
-      <div className="section-body">
-        <p>The final stage transforms an incident + RCA bundle into a notification that on-call engineers can act on. The pipeline enforces strict latency targets — <strong>&lt;60 seconds</strong> from signal ingestion to alert emission for Critical incidents — through a combination of deduplication, severity-based routing, and lightweight payload assembly. The RCA summary (which may take longer to generate) is delivered as a follow-up.</p>
-      </div>
-      <div className="card-grid">
-        {[
-          { icon: '◎', title: 'Deduplication', desc: 'Suppresses redundant alerts for the same underlying incident within a configurable cooldown window, preventing alert storms during cascading failures.' },
-          { icon: '⊡', title: 'Severity Router', desc: 'Critical alerts → PagerDuty + Slack; Warning → Slack; Info → webhook log. Routing rules are configurable per channel and per severity level.' },
-          { icon: '⊞', title: 'Payload Builder', desc: 'Assembles the final alert: title, severity, affected services, contributing signal summary, RCA result (if ready), blast radius, and runbook link.' },
-          { icon: '◈', title: 'Notification Dispatchers', desc: 'Pluggable adapters for Slack, PagerDuty, email, and generic webhooks. Adding a channel means implementing a small adapter interface — no pipeline changes needed.' },
-        ].map(c => (
-          <div className="card" key={c.title}>
-            <span className="icon">{c.icon}</span>
-            <h4>{c.title}</h4>
-            <p>{c.desc}</p>
-          </div>
-        ))}
-      </div>
-      <Figure src="assets/Pasted%20image%20(11).png" label="Figure 10: Alerting pipeline — incidents flow through deduplication, severity routing, payload assembly, and notification dispatch" />
-      <div className="section-body">
-        <p>The alerting stage is designed for <strong>low latency</strong> — the structured alert (service, severity, affected services, evidence summary) fires immediately. The AI-generated RCA narrative, which may take longer to produce, appends to the alert as a follow-up. This split ensures on-call engineers get the critical context within seconds while the richer analysis arrives within the two-minute SLA.</p>
-      </div>
-      <Figure src="assets/Pasted%20image%20(12).png" label="Figure 11: Alert notification example — a structured incident payload as it appears in Slack and PagerDuty, with severity, affected services, RCA summary, and runbook link" />
-    </section>
+    <Section
+      id="alerting"
+      eyebrow="Stage 5 · Phases P5b–P6"
+      title="Explanation, alerting & storage"
+      tags={[['planned', 'Not built yet'], ['partial', 'API partial']]}
+      summary="None of the notification, LLM or database code exists yet. Only the API's health check and the Alertmanager webhook run today."
+    >
+      <Flow
+        caption="Planned: the structured alert goes out first; the LLM summary follows. Postgres becomes the source of truth (D20)."
+        w={146}
+        nodes={[
+          { id: 'rk', col: 0, row: 1, label: 'Ranked candidates', sub: 'from RCA', status: 'planned' },
+          { id: 'llm', col: 1, row: 0, label: 'LLM explainer', sub: 'gpt-4o-mini / Ollama', status: 'planned' },
+          { id: 'al', col: 1, row: 1, label: 'Alert router', sub: '1 alert / incident', status: 'planned' },
+          { id: 'db', col: 1, row: 2, label: 'Postgres 16', sub: 'running, unused', status: 'changed' },
+          { id: 'sk', col: 2, row: 1, label: 'Sinks', sub: 'Slack · email · webhook', status: 'planned' },
+          { id: 'api', col: 2, row: 2, label: 'API', sub: '/incidents (planned)', status: 'partial' },
+        ]}
+        edges={[['rk', 'llm'], ['rk', 'al'], ['llm', 'al'], ['al', 'sk'], ['rk', 'db'], ['db', 'api']]}
+      />
+
+      <PlanBuilt rows={[
+        { name: 'LLM explainer', plan: 'Optional async LLM summary', status: 'planned', built: 'Specified: JSON output where every claim cites an evidence id; invalid → retry once → deterministic template. temperature 0, cached. Redaction before any call; Ollama local fallback. No prompts or client yet.', where: 'llm/ (planned)' },
+        { name: 'Dedup', plan: 'Cooldown window', status: 'planned', built: 'One alert per open incident fingerprint.', where: 'alerting/dedup.py (planned)' },
+        { name: 'Routing', plan: 'Critical → PagerDuty + Slack', status: 'planned', built: 'By severity and service. PagerDuty dropped (D8).', where: 'alerting/router.py (planned)' },
+        { name: 'Channels', plan: 'Slack, PagerDuty, email, webhook', status: 'planned', built: 'Docs disagree: Slack/email/webhook vs. adding Telegram.', where: 'alerting/sinks/ (planned)' },
+        { name: 'Storage', plan: 'Storage & audit', status: 'planned', built: 'Tables planned: incidents, candidates, evidence, alerts, audit_log, change_events. No DB driver in dependencies.', where: 'storage/ (planned)' },
+        { name: 'HTTP API', plan: '—', status: 'partial', built: 'Built: GET /healthz, POST /webhooks/alertmanager. Planned: /readyz, /metrics, GET /incidents, ack, resolve.', where: 'api/app.py' },
+      ]} />
+
+      <Details title="Latency budget">
+        <Bullets items={[
+          'Target: alert within 60 s of the fault, RCA within 120 s.',
+          'The structured alert does not wait for the LLM. If the LLM fails or times out (20 s), the template summary is sent.',
+        ]} />
+        <OriginalFigure src="assets/Pasted%20image%20(11).png" label="Alerting pipeline: dedup, routing, payload, dispatch" />
+        <OriginalFigure src="assets/Pasted%20image%20(12).png" label="Example alert in Slack and PagerDuty" />
+      </Details>
+    </Section>
   )
 }

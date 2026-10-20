@@ -1,46 +1,50 @@
-import Figure from './Figure.jsx'
+import { Section, Table, Pill, Details } from './ui.jsx'
+
+const rows = [
+  ['D1', 'Root cause is chosen deterministically; the LLM only explains.', 'approved'],
+  ['D2', 'Graph edges are caller → callee; the RCA walk goes toward callees.', 'pending'],
+  ['D3', 'No deep-learning training; statistical detectors only.', 'approved'],
+  ['D4', 'Baselines freeze while an incident is open.', 'approved'],
+  ['D5', 'Online Boutique on kind, not Sock Shop.', 'pending'],
+  ['D6', '≥ 12 scenarios × 5 runs, plus a fault-free soak.', 'pending'],
+  ['D7', 'Six baselines, including LLM-only.', 'pending'],
+  ['D8', 'Out of scope: cloud, VMs, Datadog/PagerDuty, auto-remediation, production scale.', 'approved'],
+  ['D9', 'LLM calls go through redaction; Ollama as local fallback.', 'approved'],
+  ['D12', 'Sidecars instead of forking app images.', 'approved'],
+  ['D15', 'Evidence is bundled before ranking, not after.', 'approved'],
+  ['D20', 'Postgres is the source of truth; Redis is only the conduit.', 'approved'],
+  ['D21', 'ServiceGraph contract owned by the RCA worker.', 'pending'],
+  ['D22', 'Change correlation from a Kubernetes API watch.', 'pending'],
+  ['D23', 'A top-level scripts/ folder for dev tooling.', 'pending'],
+  ['D24', 'Three pre-commit hooks enforce the standards (not written yet).', 'pending'],
+  ['D25', 'Commit author is a GitHub username; no AI co-author trailers.', 'pending'],
+  ['D2-Chaos', 'Run chaos-daemon on the containerd runtime.', 'proposed'],
+]
+
+const pill = { approved: ['built', 'Locked'], pending: ['changed', 'Sign-off pending'], proposed: ['planned', 'Proposed'] }
 
 export default function Decisions() {
   return (
-    <section id="decisions">
-      <span className="section-stripe"></span>
-      <p className="section-subtitle">Key Decisions</p>
-      <h2 className="section-title">Architecture &amp; Design Choices</h2>
-      <div className="section-body"><p>Every system design involves trade-offs. Below are the most significant decisions that shape InfraMind's architecture, along with the reasoning behind them and the alternatives considered.</p></div>
-      {[
-        {
-          title: 'Event Streaming Backbone',
-          context: 'Apache Kafka vs. Redis Streams',
-          body: <p><strong>Decision:</strong> Open — both are viable candidates for the prototype phase. Kafka offers stronger durability, replay, and partitioning for production-grade throughput, but Redis Streams is simpler to operate and sufficient for the research prototype's scale (10K logs/s, 1K metrics/s, 5K spans/s). The adapter interface abstracts the choice so it can be swapped without pipeline changes.</p>,
-        },
-        {
-          title: 'AI Reasoning Strategy',
-          context: 'LLM-based reasoning vs. graph-based causal inference vs. hybrid',
-          body: <p><strong>Decision:</strong> Hybrid — use deterministic graph traversal and change correlation for the structured, verifiable RCA pipeline, then optionally invoke an LLM for natural-language synthesis. The LLM runs asynchronously so it never blocks alert delivery. This keeps the core RCA deterministic and fast while adding AI context where it provides the most value.</p>,
-        },
-        {
-          title: 'Service Dependency Graph',
-          context: 'Static (config-seeded) vs. dynamic (trace-derived)',
-          body: <p><strong>Decision:</strong> Dynamic, with static fallback. The graph is built and continuously updated from distributed trace data (span parent/child relationships). For services without trace instrumentation, operators can seed the graph via configuration. The RCA engine gracefully degrades to log + metric inference when the graph has gaps.</p>,
-        },
-        {
-          title: 'Cross-Signal Correlation Strategy',
-          context: 'Time-window only vs. dependency-constrained',
-          body: <p><strong>Decision:</strong> Dependency-constrained time windows. Signals are only correlated if they share a service identifier <em>and</em> occur within the same time window — but additionally filtered by infrastructure layer and known dependency relationships. This reduces false positives from coincident-but-unrelated anomalies across different stacks.</p>,
-        },
-        {
-          title: 'Cloud Metrics Collection Model',
-          context: 'Sidecar (deploy per account) vs. central collector',
-          body: <p><strong>Decision:</strong> Open — to be determined during implementation. A sidecar model (deploy InfraMind inside each cloud account) avoids cross-account networking and API rate limits, but a central collector is simpler to manage. The collector adapter interface supports either approach.</p>,
-        },
-      ].map(d => (
-        <div className="decision" key={d.title}>
-          <h4>{d.title}</h4>
-          <div className="context">{d.context}</div>
-          {d.body}
-        </div>
-      ))}
-      <Figure src="assets/Pasted%20image%20(2).png" label="Figure 12: The four observability failures InfraMind is designed to solve" />
-    </section>
+    <Section
+      id="decisions"
+      eyebrow="Decision log"
+      title="Design decisions"
+      summary="Every decision is locked in infraMind/docs/decision-tree.md; changing one means adding a change-log row. D10, D11, D13, D14 and D16–D19 are unused numbers."
+    >
+      <Table head={['ID', 'Decision', 'Status']} className="decisions" rows={rows.map(([id, text, s]) => [
+        <code>{id}</code>, text, <Pill status={pill[s][0]}>{pill[s][1]}</Pill>,
+      ])} />
+
+      <Details title="How the original open questions were settled">
+        <Table head={['Question in PRD v1.1', 'Outcome']} rows={[
+          ['Kafka vs. Redis Streams', 'Redis Streams. Enough for prototype scale, already needed for state.'],
+          ['LLM vs. graph vs. hybrid RCA', 'Hybrid, with a hard rule: the graph ranks, the LLM explains (D1).'],
+          ['Static vs. trace-derived graph', 'Trace-derived with a cold-start seed file (D21).'],
+          ['Time-window vs. dependency-constrained correlation', 'Time-window only so far; graph constraint not built.'],
+          ['Sidecar vs. central cloud collector', 'Moot: cloud is out of scope (D8).'],
+        ]} />
+        <p>Also recorded outside D-numbers: the Alertmanager service-name order, 13 P4 detection rulings, and 8 P4b correlation rulings (see the specs under <code>docs/superpowers/specs/</code>).</p>
+      </Details>
+    </Section>
   )
 }

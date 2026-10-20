@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
+import Decide from './components/Decide.jsx'
 import Architecture from './components/Architecture.jsx'
-import PipelineDetail from './components/PipelineDetail.jsx'
+import Testbed from './components/Testbed.jsx'
 import Ingestion from './components/Ingestion.jsx'
 import Detection from './components/Detection.jsx'
+import Correlation from './components/Correlation.jsx'
 import RCA from './components/RCA.jsx'
 import Alerting from './components/Alerting.jsx'
+import Evaluation from './components/Evaluation.jsx'
 import Decisions from './components/Decisions.jsx'
 import TechStack from './components/TechStack.jsx'
 import Glossary from './components/Glossary.jsx'
@@ -20,17 +23,19 @@ export default function App() {
     const update = () => {
       let current = 'overview'
       const scrollY = window.scrollY
-      const offset = window.innerWidth <= 768 ? 80 : 10
+      const offset = window.innerWidth <= 768 ? 90 : 40
       sections.forEach(s => {
-        if (scrollY >= s.offsetTop - offset) current = s.id
+        if (scrollY >= s.getBoundingClientRect().top + scrollY - offset) current = s.id
       })
       setActive(current)
       ticking = false
     }
-    window.addEventListener('scroll', () => {
+    const onScroll = () => {
       if (!ticking) { requestAnimationFrame(update); ticking = true }
-    })
+    }
+    window.addEventListener('scroll', onScroll)
     update()
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (
@@ -39,12 +44,15 @@ export default function App() {
       <main>
         <div className="container">
           <Hero />
+          <Decide />
           <Architecture />
-          <PipelineDetail />
+          <Testbed />
           <Ingestion />
           <Detection />
+          <Correlation />
           <RCA />
           <Alerting />
+          <Evaluation />
           <Decisions />
           <TechStack />
           <Glossary />
