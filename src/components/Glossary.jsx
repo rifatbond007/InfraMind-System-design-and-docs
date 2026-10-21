@@ -10,6 +10,8 @@ const terms = [
   ['Blast radius', 'The services likely affected by a root cause.'],
   ['Soak run', 'A long fault-free run used to count false alarms per hour.'],
   ['Ablation', 'The full system with one part switched off, to measure what that part adds.'],
+  ['Evidence bundle', 'The metrics, logs, traces and changes behind one candidate, each with an id the LLM must cite.'],
+  ['Replay', 'Re-feeding a recorded signal fixture through the pipeline in signal time; gives identical results every run.'],
   ['kind', 'Kubernetes in Docker: a local cluster used as the testbed.'],
 ]
 
@@ -27,7 +29,7 @@ export default function Glossary() {
           </div>
         ))}
       </dl>
-      <p className="note sources">Sources: <code>infraMind/</code> at branch <code>dev-rifat</code> (CLAUDE.md, docs/decision-tree.md, docs/PROGRESS.md, design specs, src/, testbed/) and the original PRD v1.1. Status as of 21 Oct 2026.</p>
+      <p className="note sources">Sources: <code>infraMind/</code> at branch <code>dev-rifat</code> (CLAUDE.md, docs/decision-tree.md, docs/PROGRESS.md, design specs, src/, testbed/) and the original PRD v1.1. Status as of 21 Oct 2026 (through commit 6583d9c, P8).</p>
     </section>
   )
 }

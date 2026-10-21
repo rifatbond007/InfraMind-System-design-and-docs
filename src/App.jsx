@@ -10,6 +10,7 @@ import Correlation from './components/Correlation.jsx'
 import RCA from './components/RCA.jsx'
 import Alerting from './components/Alerting.jsx'
 import Evaluation from './components/Evaluation.jsx'
+import Packaging from './components/Packaging.jsx'
 import Decisions from './components/Decisions.jsx'
 import TechStack from './components/TechStack.jsx'
 import Glossary from './components/Glossary.jsx'
@@ -53,6 +54,7 @@ export default function App() {
           <RCA />
           <Alerting />
           <Evaluation />
+          <Packaging />
           <Decisions />
           <TechStack />
           <Glossary />

@@ -22,7 +22,7 @@ export default function Ingestion() {
           { id: 'cj', col: 1, row: 2, label: 'Jaeger collector', sub: 'errors · p95 · edges', status: 'built' },
           { id: 'ca', col: 1, row: 3, label: 'Webhook API', sub: 'bearer secret', status: 'built' },
           { id: 's', col: 2, row: 1, label: 'signals', sub: 'Redis stream', status: 'built' },
-          { id: 'g', col: 2, row: 3, label: 'graph-updates', sub: 'stream, no consumer yet', status: 'changed' },
+          { id: 'g', col: 2, row: 3, label: 'graph-updates', sub: 'stream → RCA worker', status: 'built' },
         ]}
         edges={[['p', 'cp'], ['l', 'cl'], ['j', 'cj'], ['a', 'ca'], ['cp', 's'], ['cl', 's'], ['cj', 's'], ['ca', 's'], ['cj', 'g']]}
       />
@@ -32,7 +32,7 @@ export default function Ingestion() {
         { name: 'Logs', plan: 'ELK + Loki streaming', status: 'changed', built: 'Loki only. Pulls problem lines (error, warn, fatal, panic, traceback…), keeps a redacted 500-char message, http/gRPC codes and trace id.', where: 'ingestion/loki.py' },
         { name: 'Traces', plan: 'Jaeger + OTLP receiver', status: 'changed', built: 'Jaeger query API only, no OTLP receiver. Emits error spans, per-service p95, and caller → callee edges.', where: 'ingestion/jaeger.py' },
         { name: 'Alerts in', plan: 'PagerDuty + Grafana webhooks', status: 'changed', built: 'Alertmanager webhook. 1 MiB / 1000-alert limits; 503 on bus failure so Alertmanager retries.', where: 'api/alertmanager.py' },
-        { name: 'Redaction', plan: '—', status: 'partial', built: 'JWT, bearer tokens, emails, IPv4, password/secret/token pairs. Pod/image/node name hashing (D9) not built.', where: 'common/redact.py' },
+        { name: 'Redaction', plan: '—', status: 'partial', built: 'JWT, bearer tokens, emails, IPv4, password/secret/token pairs. Pod, image and node name hashing (D9) is built only on the LLM path (llm/redact.py), not at ingestion.', where: 'common/redact.py' },
       ]} />
 
       <Details title="The Signal format">

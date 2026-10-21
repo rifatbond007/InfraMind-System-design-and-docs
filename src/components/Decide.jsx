@@ -8,7 +8,9 @@ const items = [
   { id: 'D2', ask: 'Accept the reworded RCA walk: edges point caller → callee, and the walk goes toward callees.', why: 'The proposal said "upstream", which is ambiguous. Failures propagate from callee to caller.', impact: 'Fixes the meaning of the P5 graph walk.' },
   { id: 'Timeline', ask: 'Give the paper phase (P9) 3–4 weeks and re-baseline dates from the real start date.', why: 'The proposal timeline predates the build.', impact: 'Schedule.' },
   { id: 'D21–D25', ask: 'Sign off the service graph contract, change correlation, scripts/ folder, pre-commit hooks and commit identity rules.', why: 'Locked by the team on 10–11 Oct, marked "supervisor sign-off pending".', impact: 'D24 hooks are not written yet.' },
-  { id: 'D2-Chaos', ask: 'Approve switching chaos-daemon to the containerd runtime.', why: 'Without it, CPU, memory and network faults never inject (see Testbed).', impact: 'Blocks most P7 scenarios.' },
+  { id: 'D7-Replay', ask: 'Accept signal-time replay of recorded fixtures as the evaluation\'s reproducibility method.', why: 'Detection, correlation and ranking run on signal time, so the same fixture gives a byte-identical result on every run.', impact: 'Defines how every P7 result is produced. Team-approved 21 Oct.' },
+  { id: 'D26–D27', ask: 'Sign off running only pod-level scenarios until the chaos fix lands (D26), and a 4-Deployment chart with alerting and the LLM folded into existing processes (D27).', why: 'D26 ships the 6 stress/network scenarios written but marked blocked. D27 avoids 3 extra Deployments with no independent scaling need.', impact: 'Team-approved 21 Oct. D27 conflicts with the module import rule (see Architecture).' },
+  { id: 'D2-Chaos', ask: 'Approve switching chaos-daemon to the containerd runtime.', why: 'Without it, CPU, memory and network faults never inject (see Testbed).', impact: 'Blocks 6 of the 14 P7 scenarios.' },
 ]
 
 export default function Decide() {

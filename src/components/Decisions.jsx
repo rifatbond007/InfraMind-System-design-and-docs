@@ -8,6 +8,7 @@ const rows = [
   ['D5', 'Online Boutique on kind, not Sock Shop.', 'pending'],
   ['D6', '≥ 12 scenarios × 5 runs, plus a fault-free soak.', 'pending'],
   ['D7', 'Six baselines, including LLM-only.', 'pending'],
+  ['D7-Replay', 'Evaluation is reproduced by signal-time replay of NDJSON fixtures.', 'pending'],
   ['D8', 'Out of scope: cloud, VMs, Datadog/PagerDuty, auto-remediation, production scale.', 'approved'],
   ['D9', 'LLM calls go through redaction; Ollama as local fallback.', 'approved'],
   ['D12', 'Sidecars instead of forking app images.', 'approved'],
@@ -18,6 +19,8 @@ const rows = [
   ['D23', 'A top-level scripts/ folder for dev tooling.', 'pending'],
   ['D24', 'Three pre-commit hooks enforce the standards (not written yet).', 'pending'],
   ['D25', 'Commit author is a GitHub username; no AI co-author trailers.', 'pending'],
+  ['D26', 'Stress/network scenarios ship marked blocked; pod-level chaos is the live path.', 'pending'],
+  ['D27', 'Four Helm Deployments; alerting in the API, the LLM in the RCA worker.', 'pending'],
   ['D2-Chaos', 'Run chaos-daemon on the containerd runtime.', 'proposed'],
 ]
 
@@ -41,6 +44,7 @@ export default function Decisions() {
           ['LLM vs. graph vs. hybrid RCA', 'Hybrid, with a hard rule: the graph ranks, the LLM explains (D1).'],
           ['Static vs. trace-derived graph', 'Trace-derived with a cold-start seed file (D21).'],
           ['Time-window vs. dependency-constrained correlation', 'Time-window only so far; graph constraint not built.'],
+          ['Upstream walk, BFS vs. DFS', 'Toward callees, breadth-first, depth ≤ 4 (P5 code).'],
           ['Sidecar vs. central cloud collector', 'Moot: cloud is out of scope (D8).'],
         ]} />
         <p>Also recorded outside D-numbers: the Alertmanager service-name order, 13 P4 detection rulings, and 8 P4b correlation rulings (see the specs under <code>docs/superpowers/specs/</code>).</p>

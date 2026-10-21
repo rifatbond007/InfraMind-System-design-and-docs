@@ -132,6 +132,7 @@ main { flex: 1; min-width: 0; padding: 3rem 2rem 8rem; }
 .phase:nth-child(6n) { border-right: none; }
 .phase:nth-last-child(-n+6) { border-bottom: none; }
 .phase.built { background: var(--ok); color: var(--ok-ink); }
+.phase.changed { background: var(--warn); color: var(--warn-ink); }
 .phase.planned { background: var(--surface); color: var(--text-tertiary); background-image: repeating-linear-gradient(135deg, transparent 0 6px, var(--ext) 6px 7px); }
 .phase-id { font-size: 0.75rem; font-weight: 700; }
 .phase-name { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.3; }
@@ -178,6 +179,43 @@ section { margin-bottom: 5.5rem; scroll-margin-top: 1rem; }
 .flow .edge { stroke: var(--ink); stroke-width: 1.75; }
 .flow .edge.planned { stroke-dasharray: 5 4; opacity: 0.7; }
 .flow .arrowhead { fill: var(--ink); }
+
+/* diagram motion: column-by-column draw-in, then packets travel along live edges */
+.flow .node { opacity: 0; transform: translateY(8px); transform-box: fill-box; outline: none;
+  transition: opacity 0.45s ease, transform 0.45s ease; transition-delay: calc(var(--i) * 0.18s); }
+.flow.in .node { opacity: 1; transform: none; }
+.flow .edge-g { opacity: 0; transition: opacity 0.3s ease; transition-delay: calc(var(--i) * 0.18s); }
+.flow.in .edge-g { opacity: 1; }
+.flow .edge:not(.planned) { stroke-dasharray: 100; stroke-dashoffset: 100;
+  transition: stroke-dashoffset 0.6s ease, stroke-width 0.15s; transition-delay: calc(var(--i) * 0.18s); }
+.flow.in .edge:not(.planned) { stroke-dashoffset: 0; }
+.flow .packet { stroke: var(--ink); stroke-width: 4.5; stroke-dasharray: 7 200; stroke-dashoffset: 7; opacity: 0; }
+.flow.in .packet {
+  opacity: 1;
+  animation: packet 2.4s linear infinite;
+  animation-delay: calc(var(--i) * 0.18s + 0.7s + var(--k) * 0.17s);
+}
+@keyframes packet { from { stroke-dashoffset: 7; } to { stroke-dashoffset: -100; } }
+/* planned boxes look "under construction"; blocked boxes pulse */
+.flow.in .node.planned rect { animation: marching 1.6s linear infinite; }
+@keyframes marching { to { stroke-dashoffset: -18; } }
+.flow.in .node.blocked rect { animation: pulse 1.8s ease-in-out infinite; }
+@keyframes pulse { 50% { stroke-width: 4; } }
+
+/* hover / keyboard focus: highlight a box, its edges and neighbours */
+.flow .node, .flow .edge-g { cursor: default; }
+.flow.focus .node:not(.hot), .flow.focus .edge-g:not(.hot) { opacity: 0.22; transition-delay: 0s; }
+.flow .node.hot rect { stroke-width: 3; }
+.flow .edge-g.hot .edge { stroke-width: 2.75; }
+.flow .node:focus-visible rect { stroke-width: 3.5; }
+
+@media (prefers-reduced-motion: reduce) {
+  .flow .node, .flow .edge-g, .flow .edge:not(.planned) {
+    transition: none; opacity: 1; transform: none; stroke-dashoffset: 0;
+  }
+  .flow .packet { display: none; }
+  .flow.in .node rect { animation: none; }
+}
 .flow-cap {
   display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center;
   border-top: 2px solid var(--ink); padding: 0.55rem 0.9rem;
@@ -233,6 +271,7 @@ td .pill { margin-right: 0.3rem; }
 /* ---------- callout + asks ---------- */
 .callout { border: 2px solid var(--ink); padding: 0.8rem 1rem; margin: 0 0 1.25rem; font-size: 0.9rem; line-height: 1.5; }
 .callout.blocked { background: var(--bad); color: var(--bad-ink); }
+.callout.changed { background: var(--warn); color: var(--warn-ink); }
 
 .asks { display: flex; flex-direction: column; border: 2px solid var(--ink); background: var(--surface); }
 .ask { display: grid; grid-template-columns: 6.5rem 1fr; border-top: 1.5px solid var(--ink); }

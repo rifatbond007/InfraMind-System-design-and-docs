@@ -1,5 +1,6 @@
 // Shared building blocks: every section follows the same pattern —
 // summary + status tags, status-coloured diagram, Plan vs Built table, folded details.
+import { useEffect, useRef, useState } from 'react'
 
 export const STATUS = {
   built:    { label: 'Built',    cls: 'built' },
@@ -96,14 +97,37 @@ export function Bullets({ items }) {
   return <ul className="bullets">{items.map((t, i) => <li key={i}>{t}</li>)}</ul>
 }
 
+// Adds `in` once the element scrolls into view, so diagrams animate when the reader reaches them.
+function useInView() {
+  const ref = useRef(null)
+  const [seen, setSeen] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof IntersectionObserver === 'undefined') { setSeen(true); return }
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setSeen(true); io.disconnect() }
+    }, { threshold: 0.25 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+  return [ref, seen]
+}
+
 /*
  * Status-coloured box diagram.
  * nodes: [{ id, col, row, label, sub, status }]
- * edges: [[fromId, toId, label?]]
+ * edges: [[fromId, toId, 'todo'?]]. Edges touching a planned box are dashed; 'todo' also dashes
+ *   a link whose two ends exist but are not wired together yet. Dashed edges carry no packet.
  * Boxes sit on a col/row grid; edges are drawn right-side → left-side curves
  * (or bottom → top when both nodes share a column).
+ * Animation: boxes and edges draw in column by column when scrolled into view;
+ * a packet then travels along every edge that runs today (both ends not planned).
+ * Hovering or focusing a box highlights its edges and neighbours.
+ * All motion is CSS, so prefers-reduced-motion turns it off.
  */
 export function Flow({ nodes, edges, w = 150, h = 52, colGap = 56, rowGap = 22, caption, legend = true }) {
+  const [ref, seen] = useInView()
+  const [hot, setHot] = useState(null)
   const cols = Math.max(...nodes.map(n => n.col)) + 1
   const rows = Math.max(...nodes.map(n => n.row)) + 1
   const pad = 6
@@ -136,9 +160,13 @@ export function Flow({ nodes, edges, w = 150, h = 52, colGap = 56, rowGap = 22, 
   }
 
   const used = [...new Set(nodes.map(n => n.status))]
+  const byId = Object.fromEntries(nodes.map(n => [n.id, n]))
+  const dashed = (a, b, flag) => flag === 'todo' || byId[a]?.status === 'planned' || byId[b]?.status === 'planned'
+  const near = new Set(hot ? [hot, ...edges.flatMap(([a, b]) => a === hot ? [b] : b === hot ? [a] : [])] : [])
+  const edgeHot = (a, b) => hot && (a === hot || b === hot)
 
   return (
-    <figure className="flow">
+    <figure ref={ref} className={'flow' + (seen ? ' in' : '') + (hot ? ' focus' : '')}>
       <div className="flow-scroll">
         <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label={caption}>
           <defs>
@@ -146,13 +174,29 @@ export function Flow({ nodes, edges, w = 150, h = 52, colGap = 56, rowGap = 22, 
               <path d="M0,0 L10,5 L0,10 z" className="arrowhead" />
             </marker>
           </defs>
-          {edges.map(([a, b], i) => (
-            <path key={i} d={path(a, b)} className={'edge ' + (nodes.find(n => n.id === b)?.status || '')} markerEnd="url(#arr)" fill="none" />
-          ))}
+          {edges.map(([a, b, flag], i) => {
+            const d = path(a, b)
+            const delay = { '--i': Math.min(byId[a].col, byId[b].col) + 0.5, '--k': i }
+            return (
+              <g key={i} className={'edge-g' + (edgeHot(a, b) ? ' hot' : '')} style={delay}>
+                <path d={d} pathLength={dashed(a, b, flag) ? undefined : 100} className={'edge ' + (dashed(a, b, flag) ? 'planned' : byId[b]?.status || '')} markerEnd="url(#arr)" fill="none" />
+                {!dashed(a, b, flag) && <path d={d} pathLength="100" className="packet" fill="none" />}
+              </g>
+            )
+          })}
           {nodes.map(n => {
             const p = pos[n.id]
             return (
-              <g key={n.id} className={'node ' + (STATUS[n.status]?.cls || 'planned')}>
+              <g
+                key={n.id}
+                className={'node ' + (STATUS[n.status]?.cls || 'planned') + (near.has(n.id) ? ' hot' : '')}
+                style={{ '--i': n.col }}
+                tabIndex={0}
+                onMouseEnter={() => setHot(n.id)}
+                onMouseLeave={() => setHot(null)}
+                onFocus={() => setHot(n.id)}
+                onBlur={() => setHot(null)}
+              >
                 <rect x={p.x} y={p.y} width={w} height={h} />
                 <text x={p.x + w / 2} y={p.y + (n.sub ? h / 2 - 4 : h / 2 + 4)} className="n-label" textAnchor="middle">{n.label}</text>
                 {n.sub && <text x={p.x + w / 2} y={p.y + h / 2 + 12} className="n-sub" textAnchor="middle">{n.sub}</text>}

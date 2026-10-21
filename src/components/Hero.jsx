@@ -7,11 +7,11 @@ const phases = [
   ['P3', 'Ingestion', 'built'],
   ['P4', 'Detection', 'built'],
   ['P4b', 'Correlation', 'built'],
-  ['P5', 'RCA', 'planned'],
-  ['P5b', 'LLM explainer', 'planned'],
-  ['P6', 'Alerting + storage + API', 'planned'],
-  ['P7', 'Evaluation', 'planned'],
-  ['P8', 'Packaging (Helm)', 'planned'],
+  ['P5', 'RCA', 'built'],
+  ['P5b', 'LLM explainer', 'built'],
+  ['P6', 'Alerting + storage + API', 'built'],
+  ['P7', 'Evaluation (replay only)', 'changed'],
+  ['P8', 'Packaging (Helm)', 'built'],
   ['P9', 'Paper', 'planned'],
 ]
 
@@ -27,8 +27,8 @@ export default function Hero() {
           <p className="hero-goal">When a fault hits a Kubernetes microservice app, say which service is the root cause, show the evidence, and send <strong>one</strong> deduplicated alert.</p>
         </div>
         <div className="hero-stats">
-          <div className="stat"><strong>6 / 12</strong>phases done</div>
-          <div className="stat"><strong>509</strong>tests passing</div>
+          <div className="stat"><strong>11 / 12</strong>phases coded</div>
+          <div className="stat"><strong>897</strong>tests passing</div>
           <div className="stat"><strong>22 s</strong>smoke detect<br/>(target &lt; 60 s)</div>
           <div className="stat"><strong>0</strong>eval results yet</div>
         </div>
@@ -43,7 +43,11 @@ export default function Hero() {
           </li>
         ))}
       </ol>
-      <p className="note">Done: the testbed, ingestion, detection and correlation (P0–P4b), all tested and verified live on the kind cluster. Next: P5 root cause analysis.</p>
+      <p className="note">P0–P4b are tested and verified live on the kind cluster. P5–P8 landed on 21 Oct 2026 as tested modules: RCA, the LLM explainer, alerting, storage, the API, a replay-only evaluation harness and a Helm chart. Next: P9 paper.</p>
+
+      <div className="callout changed">
+        <b>Not wired end to end yet.</b> The RCA worker ranks every incident but only logs the result. Nothing in the running pipeline calls the LLM explainer, the alert router or the Postgres writer yet; today only the evaluation harness calls them. Dashed arrows in the diagrams mark these missing links.
+      </div>
 
       <h3 className="h3">Research question</h3>
       <p className="lede">Can ingesting and correlating logs, metrics, traces and alerts <strong>(1)</strong> cut mean time to detect, <strong>(2)</strong> reduce alert noise through dedup and correlation, and <strong>(3)</strong> give automated root cause analysis that speeds up diagnosis?</p>
@@ -57,10 +61,10 @@ export default function Hero() {
           ['Alert precision', '≥ 75%', <Pill status="planned">P7</Pill>],
           ['Alert recall', '≥ 70%', <Pill status="planned">P7</Pill>],
           ['Noise reduction vs raw alerts', '≥ 40%', <><Pill status="changed">Smoke only</Pill> 6 incidents → 1 (unit test, not yet live)</>],
-          ['RCA exact / top-3', '≥ 60% / ≥ 75%', <Pill status="planned">RCA not built</Pill>],
-          ['RCA latency', '< 120 s', <Pill status="planned">RCA not built</Pill>],
+          ['RCA exact / top-3', '≥ 60% / ≥ 75%', <><Pill status="changed">Smoke only</Pill> top-1 1.0 on 2 hand-written replay fixtures; not a result</>],
+          ['RCA latency', '< 120 s', <Pill status="planned">P7 live runs</Pill>],
           ['False positive rate', '< 25%', <Pill status="planned">Soak run in P7</Pill>],
-          ['Fault scenarios', '≥ 10 (now ≥ 12)', <><Pill status="blocked">5 written, pod-kill verified</Pill></>],
+          ['Fault scenarios', '≥ 10 (now ≥ 12)', <><Pill status="blocked">14 written, 6 blocked</Pill> 8 pod-level scenarios can run</>],
         ]}
       />
       <p className="note">Smoke-run numbers come from development gates on one machine. They are not evaluation results.</p>

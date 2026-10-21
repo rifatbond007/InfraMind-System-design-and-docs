@@ -15,7 +15,7 @@ export default function Correlation() {
         rowGap={18}
         nodes={[
           { id: 'o', col: 0, row: 1, label: 'open', sub: 'new fingerprint', status: 'built' },
-          { id: 'a', col: 1, row: 0, label: 'acknowledged', sub: 'API ack (planned)', status: 'partial' },
+          { id: 'a', col: 1, row: 0, label: 'acknowledged', sub: 'API ack · Postgres only', status: 'partial' },
           { id: 'r', col: 2, row: 1, label: 'resolved', sub: '120 s quiet', status: 'built' },
           { id: 'x', col: 2, row: 2, label: 'expired', sub: '3600 s open', status: 'built' },
         ]}
@@ -27,7 +27,7 @@ export default function Correlation() {
         { name: 'Fingerprint / dedup', plan: 'Cooldown window', status: 'built', built: 'sha256("first service | 5-min bucket")[:16], fixed at open.', where: 'correlation/fingerprint.py' },
         { name: 'Severity', plan: 'Criticality + blast radius', status: 'built', built: 'Critical if any anomaly is critical, ≥ 3 services, or ≥ 20 anomalies.', where: 'correlation/tracker.py' },
         { name: 'Alertmanager signals', plan: 'Alert consumer feeds correlation', status: 'changed', built: 'Attached as corroboration only; never open an incident. Keeps raw Alertmanager clean as a baseline.', where: 'correlation/tracker.py' },
-        { name: 'Persistence', plan: 'Storage & audit', status: 'planned', built: 'All tracker state is in memory and lost on restart.', where: '—' },
+        { name: 'Persistence', plan: 'Storage & audit', status: 'partial', built: 'Tracker state is still in memory and lost on restart. The Postgres incidents table exists (P6) but the tracker does not write to it, and an API ack does not reach the tracker.', where: 'correlation/tracker.py, storage/incidents.py' },
       ]} />
 
       <Details title="Parameters and publishing rules">

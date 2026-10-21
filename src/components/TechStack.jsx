@@ -6,29 +6,29 @@ export default function TechStack() {
       id="stack"
       eyebrow="Technology"
       title="Stack & quality"
-      summary="Python 3.11+ with pydantic, redis, httpx and FastAPI. Everything else in the PRD's list is either a testbed tool or out of scope."
+      summary="Python 3.11+ with pydantic, redis, httpx, FastAPI, asyncpg, PyYAML and prometheus_client. Everything else in the PRD's list is either a testbed tool or out of scope."
     >
       <Table head={['Layer', 'In use', 'Planned / dropped']} rows={[
         ['Language', 'Python ≥ 3.11 (CI 3.11)', '—'],
-        ['Runtime libs', 'pydantic 2, redis, httpx, FastAPI, uvicorn', <><Pill status="planned">Not added</Pill> networkx, SQLAlchemy/asyncpg, Alembic, Jinja, openai, kubernetes</>],
-        ['Data stores', 'Redis 7 (streams, cursors, dedup)', <><Pill status="changed">Idle</Pill> Postgres 16 runs, unused</>],
+        ['Runtime libs', 'pydantic 2, redis, httpx, FastAPI, uvicorn, asyncpg, PyYAML, prometheus_client', <><Pill status="changed">Not declared</Pill> openai (imported lazily; falls back to Ollama) · <Pill status="planned">Not added</Pill> networkx (own graph code), Alembic, kubernetes</>],
+        ['Data stores', 'Redis 7 (streams, cursors, dedup); Postgres 16 (schema + API reads)', <><Pill status="changed">Partial</Pill> no pipeline writes to Postgres yet</>],
         ['Sources', 'Prometheus, Loki, Jaeger, Alertmanager', <><Pill status="planned">Dropped</Pill> ELK, Datadog, PagerDuty, Grafana webhooks</>],
         ['Infra', 'kind, Helm, Chaos Mesh, Online Boutique', <><Pill status="planned">Dropped</Pill> AWS/GCP/Azure, VMs, AWS FIS</>],
-        ['Channels', '—', <><Pill status="planned">P6</Pill> Slack, email, webhook</>],
-        ['Packaging', 'Dockerfile (placeholder CMD), docker-compose', <><Pill status="planned">P8</Pill> Helm chart in deploy/helm/</>],
+        ['Channels', 'Console, generic webhook', <><Pill status="planned">Deferred</Pill> Slack, email</>],
+        ['Packaging', 'Non-root Dockerfile, Helm chart (4 Deployments), 8-service docker-compose', <><Pill status="changed">Not yet</Pill> image built and installed on kind</>],
       ]} />
 
       <h3 className="h3">Testing & CI</h3>
       <div className="hero-stats inline">
-        <div className="stat"><strong>509</strong>passed</div>
-        <div className="stat"><strong>4</strong>skipped (live backends)</div>
-        <div className="stat"><strong>6.7 s</strong>full suite</div>
+        <div className="stat"><strong>897</strong>passed</div>
+        <div className="stat"><strong>22</strong>skipped (live backends)</div>
+        <div className="stat"><strong>9.2 s</strong>full suite</div>
         <div className="stat"><strong>0</strong>e2e tests</div>
       </div>
       <Bullets items={[
-        'Unit tests by area: detection 81, common 63, ingestion 64, correlation 61, api 25, plus about 48 repo-level checks (module rules, metadata drift, smoke-gate logic).',
+        'Unit tests added on 21 Oct by area: evaluation 74, rca 71, llm 66, api 65, storage 50, alerting 26. Earlier: detection 81, ingestion 64, common 63, correlation 61, plus repo-level checks (module rules, metadata drift, smoke-gate logic).',
         'Fakes instead of servers: fakeredis and httpx.MockTransport.',
-        'CI on every push: ruff, ruff format, mypy, pytest, hadolint (non-blocking). A passing GitHub Actions run has not been recorded yet.',
+        'CI on every push: ruff, ruff format, mypy, pytest, hadolint (now blocking) and a new helm-lint job. A passing GitHub Actions run has not been recorded yet; the dev-rifat branch is not pushed.',
       ]} />
 
       <Details title="Versions">

@@ -8,9 +8,10 @@ const links = [
   { href: '#ingestion',    label: 'Ingestion',    s: 'built' },
   { href: '#detection',    label: 'Detection',    s: 'built' },
   { href: '#correlation',  label: 'Correlation',  s: 'built' },
-  { href: '#rca',          label: 'Root cause',   s: 'planned' },
-  { href: '#alerting',     label: 'Alerting',     s: 'planned' },
-  { href: '#evaluation',   label: 'Evaluation',   s: 'planned' },
+  { href: '#rca',          label: 'Root cause',   s: 'built' },
+  { href: '#alerting',     label: 'Alerting',     s: 'changed' },
+  { href: '#evaluation',   label: 'Evaluation',   s: 'changed' },
+  { href: '#packaging',    label: 'Packaging',    s: 'built' },
   { href: '#decisions',    label: 'Decisions',    s: null },
   { href: '#stack',        label: 'Stack',        s: null },
 ]
