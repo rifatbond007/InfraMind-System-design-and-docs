@@ -35,7 +35,7 @@ export function Words({ lines, base = 0 }) {
     <span className="split" style={{ '--base': `${base}ms` }}>
       {lines.map((line, l) => (
         <span key={l}>
-          {l > 0 && <br />}
+          {l > 0 && <>{' '}<br /></>}
           {line.split(' ').map((w, k) => (
             <span key={k}>
               {k > 0 && ' '}

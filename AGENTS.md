@@ -6,7 +6,7 @@ Documentation site for InfraMind. The implementation lives in the sibling repo `
 
 ## What's here
 
-- **`src/landing/`** — project landing page (`Landing.jsx` sections, `parts.jsx` shared pieces, `landing.css` tokens with light/dark). Calm warm-neutral style with one indigo accent, after puku.sh. Shares the `theme` localStorage key with the docs.
+- **`src/landing/`** — product landing page (hero, integrations, features, evidence hub, trust, alerts & API, quickstart, roadmap, FAQ; `Landing.jsx` sections, `parts.jsx` shared pieces, `landing.css` tokens with light/dark). Calm warm-neutral style with one indigo accent, after puku.sh. Shares the `theme` localStorage key with the docs.
 - **`public/_redirects`** — Netlify: `/docs` → `/system-design/`
 - **`src/`** (outside `landing/`) — React docs site:
   - `App.jsx` — layout: sticky left nav + one reading column, scroll-tracked active link

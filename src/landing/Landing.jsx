@@ -1,4 +1,4 @@
-// InfraMind project landing page. The system design docs live at /system-design/ (the "Docs" tab).
+// InfraMind product landing page. The system design docs live at /system-design/ (the "Docs" tab).
 // Every fact here comes from the infraMind repo; numbers from development smoke runs are labelled.
 import { useState } from 'react'
 import {
@@ -7,6 +7,7 @@ import {
 } from './parts.jsx'
 
 const STATUS_DATE = '23 Oct 2026'
+const GITHUB = 'https://github.com/rifatbond007/inframind-core'
 
 // Deterministic pseudo-random numbers so the decorative graphics render the same every time.
 function rng(seed) {
@@ -22,12 +23,16 @@ function rng(seed) {
 /* ───────────────────────── Nav ───────────────────────── */
 
 const NAV = [
-  ['Pipeline', '#pipeline'],
-  ['Method', '#method'],
-  ['Research', '#research'],
-  ['Build log', '#log'],
-  ['Team', '#team'],
+  ['Features', '#features'],
+  ['How it works', '#pipeline'],
+  ['Quickstart', '#quickstart'],
+  ['Roadmap', '#roadmap'],
+  ['FAQ', '#faq'],
 ]
+
+function GitHubIcon() {
+  return <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z" /></svg>
+}
 
 function Nav({ theme, setTheme }) {
   const scrolled = useScrolled()
@@ -42,7 +47,8 @@ function Nav({ theme, setTheme }) {
         </nav>
         <div className="lnav-right">
           <ThemeIconButton theme={theme} setTheme={setTheme} />
-          <a href={DOCS} className="btn btn-ink btn-sm">Read the docs</a>
+          <a href={GITHUB} className="icon-btn" aria-label="InfraMind on GitHub"><GitHubIcon /></a>
+          <a href="#quickstart" className="btn btn-ink btn-sm">Get started</a>
           <button type="button" className="icon-btn menu-btn" aria-label="Menu" aria-expanded={open} onClick={() => setOpen(o => !o)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d={open ? 'M6 6l12 12M18 6L6 18' : 'M4 8h16M4 16h16'} /></svg>
           </button>
@@ -152,19 +158,35 @@ function Hero() {
   return (
     <section className={'hero-panel' + (ready ? ' ready' : '')} id="top">
       <a href={`${DOCS}#architecture`} className="announce fx" style={{ '--fx': '0ms' }}>
-        <span className="new">NEW</span> Pipeline wired end to end · {STATUS_DATE} <span aria-hidden="true">→</span>
+        <span className="new">PREVIEW</span> Now wired end to end <span aria-hidden="true">→</span>
       </a>
-      <h1 className="display"><Words lines={['Find the root cause,', 'not the loudest symptom.']} base={120} /></h1>
-      <p className="hero-sub fx" style={{ '--fx': '650ms' }}>InfraMind watches a Kubernetes cluster and tells you which service broke, with the proof.</p>
+      <h1 className="display"><Words lines={['One alert.', 'The real root cause.']} base={120} /></h1>
+      <p className="hero-sub fx" style={{ '--fx': '650ms' }}>InfraMind turns a flood of Kubernetes signals into one incident, and tells you which service caused it, with proof.</p>
       <div className="hero-ctas fx" style={{ '--fx': '800ms' }}>
-        <a href={DOCS} className="btn btn-ink btn-lg">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"><path d="M6 3h9l4 4v14H6z" /><path d="M14 3v5h5M9 13h7M9 17h5" /></svg>
-          Read the system design
-        </a>
-        <Command text="make up && make up-app" />
+        <a href="#quickstart" className="btn btn-ink btn-lg">Get started</a>
+        <Command text="git clone https://github.com/rifatbond007/inframind-core" />
       </div>
+      <p className="hero-caption fx" style={{ '--fx': '950ms' }}>Open source · MIT licensed · Kubernetes-native</p>
       <SignalField />
       <Console />
+    </section>
+  )
+}
+
+/* ───────────────────────── Integrations marquee ───────────────────────── */
+
+const TOOLS = ['Kubernetes', 'Prometheus', 'Alertmanager', 'Loki', 'Jaeger', 'Helm', 'Redis', 'PostgreSQL', 'OpenAI', 'Ollama']
+
+function Integrations() {
+  const row = [...TOOLS, ...TOOLS]
+  return (
+    <section className="integrations" data-reveal>
+      <p className="eyebrow">Works with the stack you already run</p>
+      <div className="marquee">
+        <div className="marquee-track">
+          {row.map((t, i) => <span key={i} className="tool" aria-hidden={i >= TOOLS.length}><i />{t}</span>)}
+        </div>
+      </div>
     </section>
   )
 }
@@ -173,9 +195,9 @@ function Hero() {
 
 function Stats() {
   const cells = [
-    ['Signal types', 4, 'Metrics, logs, traces, alerts'],
-    ['Detectors', 4, 'Simple statistics, no training'],
-    ['Alert per incident', 1, 'No alert storms'],
+    ['Signal sources', 4, 'Metrics, logs, traces, alerts'],
+    ['Alert per incident', 1, 'Not a flood'],
+    ['Pods to run', 4, 'One Helm chart'],
   ]
   return (
     <section className="stats" data-reveal>
@@ -187,10 +209,10 @@ function Stats() {
         </div>
       ))}
       <div className="stat-cell cta">
-        <p className="stat-lede">See how every stage is built.</p>
-        <a href={DOCS} className="btn btn-outline">
-          <span className="btn-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="6" r="2" /><circle cx="12" cy="6" r="2" /><circle cx="18" cy="6" r="2" /><circle cx="6" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="18" cy="12" r="2" /><circle cx="6" cy="18" r="2" /><circle cx="12" cy="18" r="2" /><circle cx="18" cy="18" r="2" /></svg></span>
-          Open the docs
+        <p className="stat-lede">Free and open source. Read every line.</p>
+        <a href={GITHUB} className="btn btn-outline">
+          <span className="btn-ico"><GitHubIcon /></span>
+          View on GitHub
         </a>
       </div>
     </section>
@@ -300,7 +322,8 @@ function Pipeline() {
   return (
     <section className="block" id="pipeline">
       <div className="center-head" data-reveal>
-        <h2 className="h2"><Words lines={['Four signals. One incident.', 'One ranked answer.']} /></h2>
+        <p className="eyebrow accent"><Scramble text="How it works" /></p>
+        <h2 className="h2"><Words lines={['From noise', 'to one answer.']} /></h2>
       </div>
       <div className="layer-card" ref={ref} data-reveal onMouseLeave={() => setPause(false)}>
         <ol className="steps">
@@ -393,10 +416,10 @@ function Method() {
     ['One alert, not a flood', 'Related problems merge into one incident and one alert.', <Dedup />],
   ]
   return (
-    <section className="block" id="method">
+    <section className="block" id="features">
       <div className="left-head" data-reveal>
-        <p className="eyebrow accent"><Scramble text="01 — How it decides" /></p>
-        <h2 className="h2"><Words lines={['The graph ranks.', 'The LLM explains.']} /></h2>
+        <p className="eyebrow accent"><Scramble text="01 — Features" /></p>
+        <h2 className="h2"><Words lines={['Built for the', '3 a.m. page.']} /></h2>
       </div>
       <div className="grid-2">
         {cards.map(([t, d, viz]) => (
@@ -491,140 +514,183 @@ function Bundle() {
   )
 }
 
-/* ───────────────────────── Research ───────────────────────── */
+/* ───────────────────────── Trust ───────────────────────── */
 
-const TARGETS = [
-  ['Time to detect', '< 60 s', 'smoke', '22–28 s so far'],
-  ['Less alert noise', '≥ 40%', 'smoke', ''],
-  ['Right root cause', '≥ 60%', 'smoke', ''],
-  ['Root cause time', '< 120 s', 'pending', ''],
-  ['False alarms', '< 25%', 'pending', ''],
+const TRUST = [
+  ['lock', 'Read-only access', 'Only get, list and watch. It never changes your cluster.'],
+  ['eye', 'Redacted first', 'Secrets, tokens and emails are stripped before any LLM call.'],
+  ['cpu', 'No OpenAI needed', 'Falls back to a local Ollama model, then a plain template.'],
+  ['list', 'Full audit log', 'Every alert, ack and resolve is recorded.'],
+  ['pulse', 'Watches itself', 'Six Prometheus metrics about its own health.'],
+  ['api', 'Simple API', 'List, acknowledge and resolve incidents over HTTP.'],
 ]
 
-function Research() {
-  return (
-    <section className="block" id="research">
-      <div className="left-head" data-reveal>
-        <p className="eyebrow accent"><Scramble text="02 — Research" /></p>
-        <h2 className="h2"><Words lines={['Measured, not claimed.']} /></h2>
-      </div>
-      <div className="research-grid">
-        <div className="rq" data-reveal>
-          <p className="eyebrow"><Scramble text="Research question" /></p>
-          <p className="rq-text">Can combining logs, metrics, traces and alerts <b>detect faults faster</b>, <b>cut alert noise</b> and <b>find the root cause</b>?</p>
-          <div className="rq-meta">
-            <div><span className="eyebrow">Test app</span>11 services</div>
-            <div><span className="eyebrow">Fault scenarios</span>14</div>
-            <div><span className="eyebrow">Runs each</span>5</div>
-            <div><span className="eyebrow">Baselines</span>6</div>
-          </div>
-        </div>
-        <div className="targets" data-reveal>
-          {TARGETS.map(([m, t, s, e]) => (
-            <div className="target" key={m}>
-              <div className="t-top">
-                <span className="t-metric">{m}</span>
-                <span className={'tag ' + s}>{s === 'smoke' ? 'Early check' : 'Not measured yet'}</span>
-              </div>
-              <div className="t-row"><span className="t-goal">target {t}</span>{e && <span className="t-ev">{e}</span>}</div>
-            </div>
-          ))}
-          <p className="fine">Early checks are development runs, not final results.</p>
-        </div>
-      </div>
-    </section>
-  )
+const TRUST_ICONS = {
+  lock: <><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></>,
+  eye: <><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><path d="M4 4l16 16" /></>,
+  cpu: <><rect x="6" y="6" width="12" height="12" rx="2" /><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4" /></>,
+  list: <path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01" />,
+  pulse: <path d="M3 12h4l3-8 4 16 3-8h4" />,
+  api: <path d="M8 6l-6 6 6 6M16 6l6 6-6 6" />,
 }
 
-/* ───────────────────────── Stack ───────────────────────── */
-
-function Stack() {
-  const items = [
-    ['Testbed', 'kind + Online Boutique', 'A full cluster on one laptop.', 'testbed'],
-    ['Observability', 'Prometheus · Loki · Jaeger', 'Reads the tools you already run.', 'ingestion'],
-    ['Faults', 'Chaos Mesh', 'Breaks things on purpose.', 'evaluation'],
-    ['Core', 'Python · Redis · Postgres', 'Streams in, records out.', 'architecture'],
-    ['Deploy', 'Helm chart', 'Four pods, read-only access.', 'packaging'],
-  ]
+function Trust() {
   return (
-    <section className="block" id="stack">
+    <section className="block" id="trust">
       <div className="center-head" data-reveal>
-        <h2 className="h2"><Words lines={['Built on what a cluster', 'already runs.']} /></h2>
+        <p className="eyebrow accent"><Scramble text="02 — Safe by default" /></p>
+        <h2 className="h2"><Words lines={['Looks at everything.', 'Touches nothing.']} /></h2>
       </div>
-      <div className="stack-grid">
-        {items.map(([tag, t, d, href]) => (
-          <a className="scard" key={tag} href={`${DOCS}#${href}`} data-reveal>
-            <span className="eyebrow"><Scramble text={tag} /></span>
+      <div className="trust-grid" data-reveal>
+        {TRUST.map(([ic, t, d], i) => (
+          <div className="trust-cell fx" key={t} style={{ '--fx': `${i * 70}ms` }}>
+            <span className="trust-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{TRUST_ICONS[ic]}</svg></span>
             <h3>{t}</h3>
             <p>{d}</p>
-            <span className="more">→</span>
-          </a>
+          </div>
         ))}
       </div>
     </section>
   )
 }
 
-/* ───────────────────────── Build log ───────────────────────── */
+/* ───────────────────────── Alerts + API ───────────────────────── */
 
-const LOG = [
-  ['Audit', '23 Oct', 'Pipeline connected end to end', 'built'],
-  ['P8', '21 Oct', 'Helm packaging', 'built'],
-  ['P7', '21 Oct', 'Evaluation harness', 'changed'],
-  ['P5–P6', '21 Oct', 'Root cause, explainer, alerts', 'built'],
-  ['P4', '19 Oct', 'Detection and grouping', 'built'],
-  ['P2–P3', '19 Oct', 'Signal collectors', 'built'],
-  ['P1', '18 Oct', 'Testbed cluster', 'built'],
-  ['P9', 'Next', 'Research paper', 'planned'],
-]
+function J({ k, v, last, ind = 1 }) {
+  const val = typeof v === 'string' ? <span className="j-s">"{v}"</span> : typeof v === 'number' ? <span className="j-n">{v}</span> : v
+  return <div style={{ paddingLeft: `${ind * 1.1}em` }}><span className="j-k">"{k}"</span>: {val}{last ? '' : ','}</div>
+}
 
-function BuildLog() {
+function Alerts() {
   return (
-    <section className="block" id="log">
-      <div className="left-head row" data-reveal>
-        <div>
-          <p className="eyebrow accent"><Scramble text="03 — Build log" /></p>
-          <h2 className="h2"><Words lines={['Small phases, often.']} /></h2>
+    <section className="block" id="alerts">
+      <div className="alerts-grid">
+        <div className="alerts-copy" data-reveal>
+          <p className="eyebrow accent"><Scramble text="03 — Alerts & API" /></p>
+          <h2 className="h2"><Words lines={['Alerts your team', 'can act on.']} /></h2>
+          <p className="lead-left fx" style={{ '--fx': '300ms' }}>Each alert names the likely cause, the services affected and the evidence behind it.</p>
+          <ul className="channels fx" style={{ '--fx': '420ms' }}>
+            <li><span className="sq ok" />Console<em>today</em></li>
+            <li><span className="sq ok" />Webhook<em>today</em></li>
+            <li><span className="sq soon" />Slack<em>soon</em></li>
+            <li><span className="sq soon" />Email<em>soon</em></li>
+          </ul>
+          <div className="endpoints fx" style={{ '--fx': '540ms' }}>
+            <code><b>GET</b> /incidents</code>
+            <code><b>GET</b> /incidents/{'{id}'}</code>
+            <code><b>POST</b> /incidents/{'{id}'}/ack</code>
+            <code><b>POST</b> /incidents/{'{id}'}/resolve</code>
+          </div>
         </div>
-        <a href={`${DOCS}#overview`} className="link-arrow">Full status →</a>
+        <div className="code-card" data-reveal>
+          <div className="console-bar">
+            <span className="tl r" /><span className="tl y" /><span className="tl g" />
+            <span className="console-title">alert.json</span>
+            <span className="console-badge">example</span>
+          </div>
+          <pre className="json">
+            <div>{'{'}</div>
+            <J k="severity" v="critical" />
+            <J k="title" v="checkout path errors" />
+            <J k="services" v={<span className="j-s">["frontend", "checkoutservice", "cartservice"]</span>} />
+            <div style={{ paddingLeft: '1.1em' }}><span className="j-k">"top_candidate"</span>: {'{'}</div>
+            <J k="service" v="cartservice" ind={2} />
+            <J k="score" v={0.82} ind={2} />
+            <J k="evidence_ids" v={<span className="j-s">["ev-3", "ev-5"]</span>} ind={2} last />
+            <div style={{ paddingLeft: '1.1em' }}>{'},'}</div>
+            <J k="blast_radius" v={<span className="j-s">["redis-cart"]</span>} />
+            <J k="summary_text" v="cartservice errors rose first…" last />
+            <div>{'}'}</div>
+          </pre>
+        </div>
       </div>
-      <ul className="log">
-        {LOG.map(([tag, date, text, s]) => (
-          <li key={tag} data-reveal>
-            <span className="log-tag">{tag}</span>
-            <span className="log-text">{text}</span>
-            <span className={'tag ' + s}>{s === 'built' ? 'Built' : s === 'changed' ? 'Partial' : 'Planned'}</span>
-            <span className="log-date">{date}</span>
-          </li>
-        ))}
-      </ul>
     </section>
   )
 }
 
-/* ───────────────────────── Team ───────────────────────── */
+/* ───────────────────────── Quickstart ───────────────────────── */
 
-function Team() {
-  const people = [
-    ['Md. Rifat Hossain', 'Testbed · Evaluation', ['Testbed', 'Evaluation', 'Packaging']],
-    ['Abdullah All Moneem', 'Signals · Detection', ['Collectors', 'Detection', 'Grouping']],
-    ['Rayhan Islam Prome', 'Reasoning · Delivery', ['Root cause', 'Explainer', 'Alerts']],
+function Quickstart() {
+  const steps = [
+    ['Start a test cluster', 'make up', 'kind, a demo shop, Prometheus, Loki and Jaeger.'],
+    ['Add your settings', 'make env-setup', 'Creates a private .env. An OpenAI key is optional.'],
+    ['Install InfraMind', 'make up-app', 'Builds the image and installs the Helm chart.'],
   ]
   return (
-    <section className="block" id="team">
-      <div className="center-head" data-reveal>
-        <h2 className="h2"><Words lines={['Three builders.', 'One question.']} /></h2>
-        <p className="lead fx" style={{ '--fx': '350ms' }}>Supervised by Golam Moktader Nayeem.</p>
+    <section className="block" id="quickstart">
+      <div className="left-head row" data-reveal>
+        <div>
+          <p className="eyebrow accent"><Scramble text="04 — Quickstart" /></p>
+          <h2 className="h2"><Words lines={['Running in', 'three commands.']} /></h2>
+        </div>
+        <a href={`${DOCS}#packaging`} className="link-arrow">Full setup guide →</a>
       </div>
-      <div className="team-grid">
-        {people.map(([n, role, own]) => (
-          <article className="pcard" key={n} data-reveal>
-            <span className="avatar" aria-hidden="true">{n.split(' ').filter(w => !w.endsWith('.')).map(w => w[0]).slice(0, 2).join('')}</span>
-            <p className="eyebrow"><Scramble text={role} /></p>
-            <h3>{n}</h3>
-            <ul>{own.map(o => <li key={o}>{o}</li>)}</ul>
-          </article>
+      <div className="qs-grid">
+        {steps.map(([t, cmd, d], i) => (
+          <div className="qs-card" key={cmd} data-reveal>
+            <span className="qs-n">0{i + 1}</span>
+            <h3>{t}</h3>
+            <p>{d}</p>
+            <Command text={cmd} />
+          </div>
         ))}
+      </div>
+    </section>
+  )
+}
+
+/* ───────────────────────── Roadmap ───────────────────────── */
+
+function Roadmap() {
+  const cols = [
+    ['Shipped', 'built', ['Anomaly detection', 'Incident grouping', 'Root cause ranking', 'Evidence-cited summaries', 'Alerts and incident API', 'Helm chart']],
+    ['In progress', 'changed', ['Live end-to-end runs', 'Benchmark results']],
+    ['Next', 'planned', ['Slack and email alerts', 'Kubernetes change tracking', 'Network and stress faults']],
+  ]
+  return (
+    <section className="block" id="roadmap">
+      <div className="center-head" data-reveal>
+        <p className="eyebrow accent"><Scramble text="05 — Roadmap" /></p>
+        <h2 className="h2"><Words lines={['Shipping in the open.']} /></h2>
+      </div>
+      <div className="road-grid">
+        {cols.map(([h, s, items]) => (
+          <div className={'road-col ' + s} key={h} data-reveal>
+            <div className="road-head"><span className={'road-dot ' + s} />{h}<em>{items.length}</em></div>
+            <ul>{items.map(it => <li key={it}>{it}</li>)}</ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+/* ───────────────────────── FAQ ───────────────────────── */
+
+const FAQ = [
+  ['Does the AI decide the root cause?', 'No. A fixed, repeatable ranking picks it. The LLM only writes the summary, and every claim must cite evidence.'],
+  ['Do I need an OpenAI key?', 'No. Without one it uses a local Ollama model, and if that is down, a plain template.'],
+  ['What access does it need?', 'Read-only access to your cluster, plus your Prometheus, Loki and Jaeger.'],
+  ['Is it production-ready?', 'Not yet. It is a preview, tested on a local kind cluster running a demo shop.'],
+  ['Is it free?', 'Yes. It is open source under the MIT license.'],
+]
+
+function Faq() {
+  return (
+    <section className="block" id="faq">
+      <div className="faq-grid">
+        <div className="left-head" data-reveal>
+          <p className="eyebrow accent"><Scramble text="FAQ" /></p>
+          <h2 className="h2"><Words lines={['Questions,', 'answered.']} /></h2>
+        </div>
+        <div className="faq" data-reveal>
+          {FAQ.map(([q, a]) => (
+            <details key={q}>
+              <summary>{q}<span aria-hidden="true">+</span></summary>
+              <p>{a}</p>
+            </details>
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -652,10 +718,10 @@ function Closing() {
     <section className="closing" data-reveal>
       <PixelField />
       <div className="closing-inner">
-        <h2 className="display sm"><Words lines={['Read how it is built.']} /></h2>
+        <h2 className="display sm"><Words lines={['Try it on your', 'next incident.']} /></h2>
         <div className="hero-ctas fx" style={{ '--fx': '550ms' }}>
-          <a href={DOCS} className="btn btn-ink btn-lg">Open the system design</a>
-          <Command text="make up && make up-app" />
+          <a href="#quickstart" className="btn btn-ink btn-lg">Get started</a>
+          <a href={GITHUB} className="btn btn-outline btn-lg"><GitHubIcon /> View on GitHub</a>
         </div>
       </div>
     </section>
@@ -664,9 +730,9 @@ function Closing() {
 
 function Footer({ theme, setTheme }) {
   const cols = [
-    ['System design', [['Architecture', 'architecture'], ['Ingestion', 'ingestion'], ['Detection', 'detection'], ['Correlation', 'correlation'], ['Root cause', 'rca'], ['Alerting', 'alerting']]],
-    ['Research', [['Evaluation', 'evaluation'], ['Testbed', 'testbed'], ['Decisions', 'decisions'], ['Needs a decision', 'decide'], ['Glossary', 'glossary']]],
-    ['Project', [['Pipeline', '#pipeline'], ['Method', '#method'], ['Build log', '#log'], ['Team', '#team']]],
+    ['Product', [['Features', '#features'], ['How it works', '#pipeline'], ['Quickstart', '#quickstart'], ['Roadmap', '#roadmap'], ['FAQ', '#faq']]],
+    ['Docs', [['Architecture', 'architecture'], ['Detection', 'detection'], ['Root cause', 'rca'], ['Alerting', 'alerting'], ['Deployment', 'packaging']]],
+    ['Project', [['GitHub', GITHUB], ['System design', 'overview'], ['Evaluation', 'evaluation'], ['Decisions', 'decisions'], ['Glossary', 'glossary']]],
   ]
   return (
     <footer className="lfoot">
@@ -680,14 +746,14 @@ function Footer({ theme, setTheme }) {
           {cols.map(([h, links]) => (
             <div key={h}>
               <p className="eyebrow">{h}</p>
-              {links.map(([l, id]) => <a key={l} href={id.startsWith('#') ? id : `${DOCS}#${id}`}>{l}</a>)}
+              {links.map(([l, id]) => <a key={l} href={id.startsWith('#') || id.startsWith('http') ? id : `${DOCS}#${id}`}>{l}</a>)}
             </div>
           ))}
         </div>
       </div>
       <div className="lfoot-legal">
-        <span>InfraMind · 2026</span>
-        <span>Status as of {STATUS_DATE}</span>
+        <span>InfraMind · MIT License · 2026</span>
+        <span>Preview · updated {STATUS_DATE}</span>
       </div>
     </footer>
   )
@@ -701,14 +767,16 @@ export default function Landing() {
       <Nav theme={theme} setTheme={setTheme} />
       <main className="landing">
         <Hero />
+        <Integrations />
         <Stats />
         <Pipeline />
         <Method />
         <Bundle />
-        <Research />
-        <Stack />
-        <BuildLog />
-        <Team />
+        <Trust />
+        <Alerts />
+        <Quickstart />
+        <Roadmap />
+        <Faq />
         <Closing />
       </main>
       <Footer theme={theme} setTheme={setTheme} />

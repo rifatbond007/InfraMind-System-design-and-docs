@@ -19,7 +19,7 @@ Since the 23 Oct audit the RCA worker publishes each ranking on `stream:rca-resu
 
 ## Reading the site
 
-The site has two pages: a project landing page at `/` and the system design docs at `/system-design/` (the **Docs** tab; `/docs` redirects there on Netlify).
+The site has two pages: a product landing page at `/` and the system design docs at `/system-design/` (the **Docs** tab; `/docs` redirects there on Netlify).
 
 
 - Each section opens with a one-line summary and status tags, then an animated, status-coloured diagram (moving packets show links that carry data today; hover a box to highlight its links), then a **Plan vs Built** table. Longer explanations and the original design figures are folded under **Details**.
@@ -29,7 +29,7 @@ The site has two pages: a project landing page at `/` and the system design docs
 
 ## Contents
 
-- `index.html` + `src/landing/` — the project landing page.
+- `index.html` + `src/landing/` — the product landing page.
 - `system-design/index.html` + `src/App.jsx`, `src/components/` — the system design docs.
 - `docs/InfraMind_PRD_v1.1.pdf` — the original Product Requirements Document (the "Plan" column).
 - `docs/index.html` — the original pre-development static site, kept for reference.
