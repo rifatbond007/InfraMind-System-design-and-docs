@@ -4,16 +4,88 @@ import { useEffect, useRef, useState } from 'react'
 
 export const DOCS = '/system-design/'
 
-export function Logo({ size = 22 }) {
+// Mark: two symptom services pointing at one ringed root cause.
+export function Logo({ size = 26 }) {
   return (
     <svg className="logo" width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-      <rect width="32" height="32" rx="8" className="logo-bg" />
-      <path d="M10 11 L16 22 M22 11 L16 22" className="logo-edge" />
-      <circle cx="10" cy="11" r="3" className="logo-dot" />
-      <circle cx="22" cy="11" r="3" className="logo-dot dim" />
-      <circle cx="16" cy="22" r="3.5" className="logo-dot" />
+      <rect width="32" height="32" rx="9" className="logo-bg" />
+      <path d="M10 10 L14.6 19.4 M22 10 L17.4 19.4" className="logo-edge" />
+      <circle cx="10" cy="10" r="2.6" className="logo-dot dim" />
+      <circle cx="22" cy="10" r="2.6" className="logo-dot dim" />
+      <circle cx="16" cy="22.5" r="5.2" className="logo-ring" />
+      <circle cx="16" cy="22.5" r="2.6" className="logo-dot" />
     </svg>
   )
+}
+
+export function Brand({ size }) {
+  return (
+    <>
+      <Logo size={size} />
+      <span className="wordmark">Infra<span>Mind</span></span>
+    </>
+  )
+}
+
+// Headline split into words that slide up out of a mask, one after another.
+// Animates when an ancestor gets `in` (scroll reveal) or `ready` (hero, on load).
+export function Words({ lines, base = 0 }) {
+  let i = 0
+  return (
+    <span className="split" style={{ '--base': `${base}ms` }}>
+      {lines.map((line, l) => (
+        <span key={l}>
+          {l > 0 && <br />}
+          {line.split(' ').map((w, k) => (
+            <span key={k}>
+              {k > 0 && ' '}
+              <span className="w"><span style={{ '--i': i++ }}>{w}</span></span>
+            </span>
+          ))}
+        </span>
+      ))}
+    </span>
+  )
+}
+
+const GLITCH = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/#_'
+
+// Mono label that decodes from random characters, left to right, when it scrolls into view.
+export function Scramble({ text, className = '' }) {
+  const ref = useRef(null)
+  const [out, setOut] = useState(text)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let raf
+    const run = () => {
+      const start = performance.now()
+      const tick = t => {
+        const p = Math.min(1, (t - start) / 750)
+        const n = Math.floor(p * text.length)
+        setOut(text.slice(0, n) + text.slice(n).replace(/[^\s—·]/g, () => GLITCH[(Math.random() * GLITCH.length) | 0]))
+        if (p < 1) raf = requestAnimationFrame(tick)
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { run(); io.disconnect() }
+    }, { threshold: 0.6 })
+    io.observe(el)
+    return () => { io.disconnect(); cancelAnimationFrame(raf) }
+  }, [text])
+  return <span ref={ref} className={className} aria-label={text}><span aria-hidden="true">{out}</span></span>
+}
+
+// True one frame after mount, so on-load animations start from their initial state.
+export function useReady() {
+  const [ready, setReady] = useState(false)
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setReady(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
+  return ready
 }
 
 // Theme: 'light' | 'dark' stored in localStorage (the docs page reads the same key);

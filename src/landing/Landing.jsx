@@ -2,8 +2,8 @@
 // Every fact here comes from the infraMind repo; numbers from development smoke runs are labelled.
 import { useState } from 'react'
 import {
-  DOCS, Logo, useTheme, ThemeIconButton, ThemeSegment, DotNumber, Command,
-  useReveal, useScrolled, useCycle,
+  DOCS, Brand, useTheme, ThemeIconButton, ThemeSegment, DotNumber, Command,
+  useReveal, useScrolled, useCycle, useReady, Words, Scramble,
 } from './parts.jsx'
 
 const STATUS_DATE = '23 Oct 2026'
@@ -35,7 +35,7 @@ function Nav({ theme, setTheme }) {
   return (
     <header className={'lnav' + (scrolled ? ' scrolled' : '') + (open ? ' open' : '')}>
       <div className="lnav-inner">
-        <a href="#top" className="lnav-brand" aria-label="InfraMind home"><Logo /> <span>InfraMind</span></a>
+        <a href="#top" className="lnav-brand" aria-label="InfraMind home"><Brand /></a>
         <nav className="lnav-links" aria-label="Sections">
           {NAV.map(([label, href]) => <a key={href} href={href} onClick={() => setOpen(false)}>{label}</a>)}
           <a href={DOCS} className="docs-tab">Docs</a>
@@ -107,7 +107,6 @@ function Console() {
           <p className="c-eyebrow mt">Incidents</p>
           <p className="c-inc on"><span className="sq warn" />checkout path <em>open</em></p>
           <p className="c-inc"><span className="sq ok" />frontend burst <em>resolved</em></p>
-          <div className="c-foot"><span>⑂ dev-rifat</span><span>4 Deployments</span></div>
         </aside>
         <div className="c-main">
           <div className="c-head">
@@ -116,10 +115,9 @@ function Console() {
               <span className="chip warn">critical</span>
               <span className="chip">open</span>
               <span className="chip">3 services</span>
-              <span className="chip mono">fp 9c1e…a04f</span>
             </div>
           </div>
-          <p className="c-eyebrow">Ranked candidates · deterministic</p>
+          <p className="c-eyebrow">Likely root cause</p>
           <ol className="c-cands">
             {cands.map((c, i) => (
               <li key={c.svc} className={i === 0 ? 'top' : ''}>
@@ -131,20 +129,17 @@ function Console() {
               </li>
             ))}
           </ol>
-          <p className="c-eyebrow">Graph walk · toward callees</p>
           <div className="c-walk">
-            <span>frontend</span><i>→</i><span>checkoutservice</span><i>→</i><span className="hl">cartservice</span><i>→</i><span>redis-cart</span>
+            <span>frontend</span><i>→</i><span>checkoutservice</span><i>→</i><span className="hl">cartservice</span>
           </div>
         </div>
         <aside className="c-right">
-          <p className="c-eyebrow">Summary · LLM explains only</p>
+          <p className="c-eyebrow">Summary</p>
           <div className="c-msg">
-            cartservice is the likely root cause: its error count rose first <span className="cite">ev-3</span> and checkout spans failed calling it <span className="cite">ev-5</span>.
+            cartservice errors rose first <span className="cite">ev-3</span>, then checkout calls to it failed <span className="cite">ev-5</span>.
           </div>
-          <div className="c-msg muted">Every claim cites an evidence id. No citation, no claim.</div>
           <div className="c-alert">
-            <span className="sq ok" /> 1 alert sent · console, webhook
-            <small>next duplicate suppressed for 300 s</small>
+            <span className="sq ok" /> 1 alert sent
           </div>
         </aside>
       </div>
@@ -153,21 +148,21 @@ function Console() {
 }
 
 function Hero() {
+  const ready = useReady()
   return (
-    <section className="hero-panel" id="top">
-      <a href={`${DOCS}#architecture`} className="announce">
+    <section className={'hero-panel' + (ready ? ' ready' : '')} id="top">
+      <a href={`${DOCS}#architecture`} className="announce fx" style={{ '--fx': '0ms' }}>
         <span className="new">NEW</span> Pipeline wired end to end · {STATUS_DATE} <span aria-hidden="true">→</span>
       </a>
-      <h1 className="display">Find the root cause,<br />not the loudest symptom.</h1>
-      <p className="hero-sub">InfraMind reads metrics, logs, traces and alerts from a Kubernetes cluster, groups them into one incident, and ranks the service that caused it, with the evidence attached.</p>
-      <div className="hero-ctas">
+      <h1 className="display"><Words lines={['Find the root cause,', 'not the loudest symptom.']} base={120} /></h1>
+      <p className="hero-sub fx" style={{ '--fx': '650ms' }}>InfraMind watches a Kubernetes cluster and tells you which service broke, with the proof.</p>
+      <div className="hero-ctas fx" style={{ '--fx': '800ms' }}>
         <a href={DOCS} className="btn btn-ink btn-lg">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"><path d="M6 3h9l4 4v14H6z" /><path d="M14 3v5h5M9 13h7M9 17h5" /></svg>
           Read the system design
         </a>
         <Command text="make up && make up-app" />
       </div>
-      <p className="hero-caption">BSc capstone research · Department of CSE, BAIUST · Kubernetes-only prototype</p>
       <SignalField />
       <Console />
     </section>
@@ -178,21 +173,21 @@ function Hero() {
 
 function Stats() {
   const cells = [
-    ['Signal types', 4, 'Metrics, logs, traces and alerts in one schema'],
-    ['Detectors', 4, 'Statistical only. No model training (D3)'],
-    ['Alerts per incident', 1, 'Deduplicated, ranked, evidence attached'],
+    ['Signal types', 4, 'Metrics, logs, traces, alerts'],
+    ['Detectors', 4, 'Simple statistics, no training'],
+    ['Alert per incident', 1, 'No alert storms'],
   ]
   return (
     <section className="stats" data-reveal>
       {cells.map(([k, v, d]) => (
         <div className="stat-cell" key={k}>
-          <p className="eyebrow">{k}</p>
+          <p className="eyebrow"><Scramble text={k} /></p>
           <DotNumber value={v} />
           <p className="stat-d">{d}</p>
         </div>
       ))}
       <div className="stat-cell cta">
-        <p className="stat-lede">Plan vs. built, stage by stage. Every number traced to the repo.</p>
+        <p className="stat-lede">See how every stage is built.</p>
         <a href={DOCS} className="btn btn-outline">
           <span className="btn-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="6" r="2" /><circle cx="12" cy="6" r="2" /><circle cx="18" cy="6" r="2" /><circle cx="6" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="18" cy="12" r="2" /><circle cx="6" cy="18" r="2" /><circle cx="12" cy="18" r="2" /><circle cx="18" cy="18" r="2" /></svg></span>
           Open the docs
@@ -205,11 +200,11 @@ function Stats() {
 /* ───────────────────────── Pipeline (layered) ───────────────────────── */
 
 const STEPS = [
-  ['Ingest', 'Prometheus, Loki and Jaeger pulled every 30 s; Alertmanager pushes'],
-  ['Detect', 'Z-score, EWMA, error spike and p95 latency per service'],
-  ['Correlate', 'anomalies grouped by service and a 5-minute window'],
-  ['Rank', 'walk the trace-built service graph toward callees'],
-  ['Explain & alert', 'store first, cite evidence, send one alert'],
+  ['Collect', 'metrics, logs, traces and alerts'],
+  ['Detect', 'spot what looks abnormal'],
+  ['Group', 'merge it into one incident'],
+  ['Rank', 'find the service that caused it'],
+  ['Alert', 'explain it and send one alert'],
 ]
 
 const CX = 340, PW = 172, PH = 48, ROW = 100, TOP = 50
@@ -305,8 +300,7 @@ function Pipeline() {
   return (
     <section className="block" id="pipeline">
       <div className="center-head" data-reveal>
-        <h2 className="h2">Four signals. One incident.<br />One ranked answer.</h2>
-        <p className="lead">Five stages that talk only through Redis Streams. Each one is a separate, tested module with its own process boundary.</p>
+        <h2 className="h2"><Words lines={['Four signals. One incident.', 'One ranked answer.']} /></h2>
       </div>
       <div className="layer-card" ref={ref} data-reveal onMouseLeave={() => setPause(false)}>
         <ol className="steps">
@@ -332,11 +326,9 @@ function WeightBars() {
   const w = [['severity', 45, 'a'], ['depth', 25, 'b'], ['onset', 20, 'c'], ['change', 10, 'd']]
   return (
     <div className="viz viz-weights">
-      <code className="formula">score = 0.45·severity + 0.20·onset + 0.25·depth + 0.10·change</code>
       <div className="wbar">
         {w.map(([k, v, c]) => <span key={k} className={'seg ' + c} style={{ '--w': `${v}%` }}><b>{v}</b>{k}</span>)}
       </div>
-      <p className="viz-note">× mean edge confidence · ties broken by a seeded hash</p>
     </div>
   )
 }
@@ -362,7 +354,6 @@ function MiniGraph() {
           </g>
         ))}
       </svg>
-      <p className="viz-note">symptom: frontend · walk: breadth-first, depth ≤ 4, walkable edges only</p>
     </div>
   )
 }
@@ -370,10 +361,9 @@ function MiniGraph() {
 function Claims() {
   return (
     <div className="viz viz-claims">
-      <div className="claim"><span className="ok-mark">✓</span>Error count on cartservice rose first <span className="cite">ev-3</span></div>
-      <div className="claim"><span className="ok-mark">✓</span>checkoutservice spans failed calling cartservice <span className="cite">ev-5</span></div>
+      <div className="claim"><span className="ok-mark">✓</span>cartservice errors rose first <span className="cite">ev-3</span></div>
+      <div className="claim"><span className="ok-mark">✓</span>Checkout calls to it failed <span className="cite">ev-5</span></div>
       <div className="claim bad"><span className="no-mark">✕</span>A recent deploy caused this <span className="cite missing">no id</span></div>
-      <p className="viz-note">invalid → retry once → deterministic template · secrets and pod names redacted first</p>
     </div>
   )
 }
@@ -389,25 +379,24 @@ function Dedup() {
       <div className="funnel" aria-hidden="true" />
       <div className="tick-row">
         <span className="row-label">sent</span>
-        <span className="one-alert">1 alert · incident fingerprint</span>
+        <span className="one-alert">1 alert</span>
       </div>
-      <p className="viz-note">same fingerprint within 300 s → suppressed · escalation to critical → alerts again</p>
     </div>
   )
 }
 
 function Method() {
   const cards = [
-    ['Deterministic ranking', 'Same incident, same answer, every run. No randomness and no wall clock inside the ranker, so a replayed fixture gives a byte-identical result.', <WeightBars />],
-    ['Walk toward the callee', 'Failures travel from callee to caller, so the walk follows caller → callee edges from the symptom service. The graph is learned from Jaeger spans.', <MiniGraph />],
-    ['Evidence or nothing', 'The LLM never picks the root cause (D1). It writes the summary, and every claim must cite an evidence id from the bundle.', <Claims />],
-    ['One alert per incident', 'Anomalies from many services fold into one fingerprinted incident, and the router sends one structured alert for it.', <Dedup />],
+    ['Same answer every time', 'A fixed scoring formula ranks the suspects. No randomness.', <WeightBars />],
+    ['Follow the calls', 'Failures spread from callee to caller, so it walks the call graph.', <MiniGraph />],
+    ['Proof for every claim', 'The LLM only explains. Each claim must cite evidence.', <Claims />],
+    ['One alert, not a flood', 'Related problems merge into one incident and one alert.', <Dedup />],
   ]
   return (
     <section className="block" id="method">
       <div className="left-head" data-reveal>
-        <p className="eyebrow accent">01 — How it decides</p>
-        <h2 className="h2">The graph ranks.<br />The LLM explains.</h2>
+        <p className="eyebrow accent"><Scramble text="01 — How it decides" /></p>
+        <h2 className="h2"><Words lines={['The graph ranks.', 'The LLM explains.']} /></h2>
       </div>
       <div className="grid-2">
         {cards.map(([t, d, viz]) => (
@@ -422,33 +411,112 @@ function Method() {
   )
 }
 
+
+/* ───────────────────────── Evidence bundle (hub) ───────────────────────── */
+
+const ICONS = {
+  metric: <path d="M4 18l5-6 4 3 7-9" />,
+  log: <path d="M5 7h14M5 12h10M5 17h12" />,
+  trace: <path d="M4 6h9M7 12h11M10 18h8" />,
+  baseline: <path d="M3 14c3 0 3-5 6-5s3 7 6 7 3-4 6-4" />,
+  db: <><ellipse cx="12" cy="6" rx="7" ry="3" /><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3" /></>,
+  text: <path d="M12 3l1.8 4.8L19 9.5l-5.2 1.7L12 16l-1.8-4.8L5 9.5l5.2-1.7z" />,
+  bell: <path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0" />,
+  file: <><path d="M6 3h9l4 4v14H6z" /><path d="M14 3v5h5M9 13h7M9 17h5" /></>,
+}
+
+function Ico({ name }) {
+  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{ICONS[name]}</svg>
+}
+
+// Curved connectors between a column of boxes and the centre card. `ys` are box centres (0–100 scale).
+function Wires({ ys, side }) {
+  const mid = 50
+  return (
+    <svg className={'wires ' + side} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      {ys.map((y, i) => {
+        const d = side === 'in'
+          ? `M0,${y} C55,${y} 45,${mid} 100,${mid}`
+          : `M0,${mid} C55,${mid} 45,${y} 100,${y}`
+        return (
+          <g key={i}>
+            <path d={d} className="wire" vectorEffect="non-scaling-stroke" />
+            <path d={d} className="spark" vectorEffect="non-scaling-stroke" pathLength="100" style={{ '--d': `${i * 0.45}s` }} />
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
+function Bundle() {
+  const inputs = [['metric', 'Metrics'], ['log', 'Logs'], ['trace', 'Traces'], ['baseline', 'Baselines']]
+  const outputs = [['db', 'Stored'], ['text', 'Summary'], ['bell', 'Alert']]
+  return (
+    <section className="block" id="bundle">
+      <div className="hub-head" data-reveal>
+        <div>
+          <p className="eyebrow accent"><Scramble text="Introducing the evidence bundle" /></p>
+          <h2 className="h2"><Words lines={['One record every', 'stage can read.']} /></h2>
+        </div>
+        <div className="hub-side fx" style={{ '--fx': '300ms' }}>
+          <p>Every suspect carries its evidence. Storage, summary and alert all read the same record.</p>
+          <a href={`${DOCS}#rca`} className="btn btn-outline">
+            <span className="btn-ico"><Ico name="file" /></span>
+            Read the RCA docs
+          </a>
+        </div>
+      </div>
+      <div className="hub" data-reveal>
+        <div className="hub-col">
+          {inputs.map(([ic, t], i) => (
+            <div className="hub-node fx" key={t} style={{ '--fx': `${200 + i * 90}ms` }}><Ico name={ic} /><span>{t}</span></div>
+          ))}
+        </div>
+        <Wires side="in" ys={[10, 36.7, 63.3, 90]} />
+        <div className="hub-card fx" style={{ '--fx': '150ms' }}>
+          <div className="hub-card-head"><Ico name="file" /><b>evidence bundle</b></div>
+          <div className="hub-field"><code># Suspects</code><small>ranked services</small></div>
+          <div className="hub-field"><code># Evidence</code><small>what each one shows</small></div>
+          <div className="hub-field"><code># Citations</code><small>ids the summary quotes</small></div>
+        </div>
+        <Wires side="out" ys={[16.7, 50, 83.3]} />
+        <div className="hub-col out">
+          {outputs.map(([ic, t], i) => (
+            <div className="hub-node fx" key={t} style={{ '--fx': `${500 + i * 90}ms` }}><Ico name={ic} /><span>{t}</span></div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 /* ───────────────────────── Research ───────────────────────── */
 
 const TARGETS = [
-  ['MTTD', '< 60 s', 'smoke', '22–28 s on a live CPU burst (P4 gate)'],
-  ['Noise reduction vs raw alerts', '≥ 40%', 'smoke', '6 incidents → 1 in a tracker test, not yet live'],
-  ['RCA exact / top-3', '≥ 60% / ≥ 75%', 'smoke', 'top-1 on 2 hand-written replay fixtures; not a result'],
-  ['Alert precision / recall', '≥ 75% / ≥ 70%', 'pending', 'P7 evaluation'],
-  ['RCA latency', '< 120 s', 'pending', 'P7 live runs'],
-  ['False positive rate', '< 25%', 'pending', 'fault-free soak run'],
+  ['Time to detect', '< 60 s', 'smoke', '22–28 s so far'],
+  ['Less alert noise', '≥ 40%', 'smoke', ''],
+  ['Right root cause', '≥ 60%', 'smoke', ''],
+  ['Root cause time', '< 120 s', 'pending', ''],
+  ['False alarms', '< 25%', 'pending', ''],
 ]
 
 function Research() {
   return (
     <section className="block" id="research">
       <div className="left-head" data-reveal>
-        <p className="eyebrow accent">02 — Research</p>
-        <h2 className="h2">Measured, not claimed.</h2>
+        <p className="eyebrow accent"><Scramble text="02 — Research" /></p>
+        <h2 className="h2"><Words lines={['Measured, not claimed.']} /></h2>
       </div>
       <div className="research-grid">
         <div className="rq" data-reveal>
-          <p className="eyebrow">Research question</p>
-          <p className="rq-text">Can ingesting and correlating logs, metrics, traces and alerts <b>cut mean time to detect</b>, <b>reduce alert noise</b>, and <b>give automated root cause analysis</b> that speeds up diagnosis?</p>
+          <p className="eyebrow"><Scramble text="Research question" /></p>
+          <p className="rq-text">Can combining logs, metrics, traces and alerts <b>detect faults faster</b>, <b>cut alert noise</b> and <b>find the root cause</b>?</p>
           <div className="rq-meta">
-            <div><span className="eyebrow">System under test</span>Online Boutique · 11 services</div>
-            <div><span className="eyebrow">Scenarios</span>14 written · 8 runnable</div>
-            <div><span className="eyebrow">Runs each</span>5 · dev / test split</div>
-            <div><span className="eyebrow">Baselines</span>6 · plus 4 ablations</div>
+            <div><span className="eyebrow">Test app</span>11 services</div>
+            <div><span className="eyebrow">Fault scenarios</span>14</div>
+            <div><span className="eyebrow">Runs each</span>5</div>
+            <div><span className="eyebrow">Baselines</span>6</div>
           </div>
         </div>
         <div className="targets" data-reveal>
@@ -456,12 +524,12 @@ function Research() {
             <div className="target" key={m}>
               <div className="t-top">
                 <span className="t-metric">{m}</span>
-                <span className={'tag ' + s}>{s === 'smoke' ? 'Smoke run only' : 'Pending P7'}</span>
+                <span className={'tag ' + s}>{s === 'smoke' ? 'Early check' : 'Not measured yet'}</span>
               </div>
-              <div className="t-row"><span className="t-goal">{t}</span><span className="t-ev">{e}</span></div>
+              <div className="t-row"><span className="t-goal">target {t}</span>{e && <span className="t-ev">{e}</span>}</div>
             </div>
           ))}
-          <p className="fine">Smoke-run numbers come from development gates on one machine. They are not evaluation results. Six of the 14 scenarios wait on a Chaos Mesh runtime fix.</p>
+          <p className="fine">Early checks are development runs, not final results.</p>
         </div>
       </div>
     </section>
@@ -472,25 +540,24 @@ function Research() {
 
 function Stack() {
   const items = [
-    ['Testbed', 'kind + Online Boutique', 'One control plane and one worker on a 7 GiB machine. make up brings it all up.', 'testbed'],
-    ['Observability', 'Prometheus · Loki · Jaeger', 'The tools a cluster already runs. InfraMind sits above them as a reasoning layer.', 'ingestion'],
-    ['Fault injection', 'Chaos Mesh 2.7', 'Pod kill, container exit, node cordon and config change today; stress and network faults blocked.', 'evaluation'],
-    ['Core', 'Python 3.11 · Redis · Postgres', 'Redis Streams carry signals; Postgres is the source of truth with an append-only audit log.', 'architecture'],
-    ['Packaging', 'Helm · 4 Deployments', 'Non-root image, read-only RBAC and six Prometheus metrics about InfraMind itself.', 'packaging'],
+    ['Testbed', 'kind + Online Boutique', 'A full cluster on one laptop.', 'testbed'],
+    ['Observability', 'Prometheus · Loki · Jaeger', 'Reads the tools you already run.', 'ingestion'],
+    ['Faults', 'Chaos Mesh', 'Breaks things on purpose.', 'evaluation'],
+    ['Core', 'Python · Redis · Postgres', 'Streams in, records out.', 'architecture'],
+    ['Deploy', 'Helm chart', 'Four pods, read-only access.', 'packaging'],
   ]
   return (
     <section className="block" id="stack">
       <div className="center-head" data-reveal>
-        <h2 className="h2">Built on what a cluster<br />already runs.</h2>
-        <p className="lead">No new agents in your pods, no cloud accounts. Read-only access to the observability stack you have.</p>
+        <h2 className="h2"><Words lines={['Built on what a cluster', 'already runs.']} /></h2>
       </div>
       <div className="stack-grid">
         {items.map(([tag, t, d, href]) => (
           <a className="scard" key={tag} href={`${DOCS}#${href}`} data-reveal>
-            <span className="eyebrow">{tag}</span>
+            <span className="eyebrow"><Scramble text={tag} /></span>
             <h3>{t}</h3>
             <p>{d}</p>
-            <span className="more">Read more →</span>
+            <span className="more">→</span>
           </a>
         ))}
       </div>
@@ -501,14 +568,14 @@ function Stack() {
 /* ───────────────────────── Build log ───────────────────────── */
 
 const LOG = [
-  ['Audit', '23 Oct', 'Full P0–P9 audit. RCA results now flow to storage, the LLM and alerting; first real image build.', 'built'],
-  ['P8', '21 Oct', 'Packaging: Helm chart with four Deployments and six self-monitoring metrics.', 'built'],
-  ['P7', '21 Oct', 'Evaluation harness: 14 scenarios, 6 baselines, 4 ablations. Replay only so far.', 'changed'],
-  ['P5–P6', '21 Oct', 'Root cause ranking, the evidence-citing explainer, alerting, Postgres and the incident API.', 'built'],
-  ['P4–P4b', '19 Oct', 'Four statistical detectors, baseline freeze, and cross-service incident correlation.', 'built'],
-  ['P2–P3', '19 Oct', 'One Signal schema on Redis Streams; Prometheus, Loki, Jaeger and Alertmanager collectors.', 'built'],
-  ['P1', '18 Oct', 'Testbed: kind, Online Boutique, observability stack and Chaos Mesh. Smoke gate 6/6.', 'built'],
-  ['P9', 'Next', 'Paper, with every number read from the evaluation CSVs.', 'planned'],
+  ['Audit', '23 Oct', 'Pipeline connected end to end', 'built'],
+  ['P8', '21 Oct', 'Helm packaging', 'built'],
+  ['P7', '21 Oct', 'Evaluation harness', 'changed'],
+  ['P5–P6', '21 Oct', 'Root cause, explainer, alerts', 'built'],
+  ['P4', '19 Oct', 'Detection and grouping', 'built'],
+  ['P2–P3', '19 Oct', 'Signal collectors', 'built'],
+  ['P1', '18 Oct', 'Testbed cluster', 'built'],
+  ['P9', 'Next', 'Research paper', 'planned'],
 ]
 
 function BuildLog() {
@@ -516,10 +583,10 @@ function BuildLog() {
     <section className="block" id="log">
       <div className="left-head row" data-reveal>
         <div>
-          <p className="eyebrow accent">03 — Build log</p>
-          <h2 className="h2">Small phases, often.</h2>
+          <p className="eyebrow accent"><Scramble text="03 — Build log" /></p>
+          <h2 className="h2"><Words lines={['Small phases, often.']} /></h2>
         </div>
-        <a href={`${DOCS}#overview`} className="link-arrow">Full status in the docs →</a>
+        <a href={`${DOCS}#overview`} className="link-arrow">Full status →</a>
       </div>
       <ul className="log">
         {LOG.map(([tag, date, text, s]) => (
@@ -539,21 +606,21 @@ function BuildLog() {
 
 function Team() {
   const people = [
-    ['Md. Rifat Hossain', 'Testbed · Evaluation', ['kind testbed and Chaos Mesh', 'Evaluation harness and scenarios', 'Packaging and Helm chart']],
-    ['Abdullah All Moneem', 'Signals · Detection', ['Ingestion collectors', 'Statistical detectors', 'Incident correlation']],
-    ['Rayhan Islam Prome', 'Reasoning · Delivery', ['Root cause analysis', 'LLM explainer', 'Alerting and storage']],
+    ['Md. Rifat Hossain', 'Testbed · Evaluation', ['Testbed', 'Evaluation', 'Packaging']],
+    ['Abdullah All Moneem', 'Signals · Detection', ['Collectors', 'Detection', 'Grouping']],
+    ['Rayhan Islam Prome', 'Reasoning · Delivery', ['Root cause', 'Explainer', 'Alerts']],
   ]
   return (
     <section className="block" id="team">
       <div className="center-head" data-reveal>
-        <h2 className="h2">Three builders.<br />One question.</h2>
-        <p className="lead">A BSc capstone at the Department of CSE, BAIUST, supervised by Golam Moktader Nayeem.</p>
+        <h2 className="h2"><Words lines={['Three builders.', 'One question.']} /></h2>
+        <p className="lead fx" style={{ '--fx': '350ms' }}>Supervised by Golam Moktader Nayeem.</p>
       </div>
       <div className="team-grid">
         {people.map(([n, role, own]) => (
           <article className="pcard" key={n} data-reveal>
             <span className="avatar" aria-hidden="true">{n.split(' ').filter(w => !w.endsWith('.')).map(w => w[0]).slice(0, 2).join('')}</span>
-            <p className="eyebrow">{role}</p>
+            <p className="eyebrow"><Scramble text={role} /></p>
             <h3>{n}</h3>
             <ul>{own.map(o => <li key={o}>{o}</li>)}</ul>
           </article>
@@ -572,7 +639,9 @@ function PixelField() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       const edge = Math.min(x, cols - 1 - x) / 14 + (rows - y) / 30
-      if (r() > Math.min(0.92, 0.35 + edge * 0.5)) cells.push(<rect key={`${x}-${y}`} x={x * s} y={y * s} width={s - 4} height={s - 4} className={r() > 0.93 ? 'px-hot' : 'px'} />)
+      // Keep the band behind the headline almost empty so the text stays readable.
+      const text = x > 16 && x < cols - 17 && y > 3 && y < rows - 4
+      if (r() > (text ? 0.985 : Math.min(0.92, 0.35 + edge * 0.5))) cells.push(<rect key={`${x}-${y}`} x={x * s} y={y * s} width={s - 4} height={s - 4} className={r() > 0.93 ? 'px-hot' : 'px'} />)
     }
   }
   return <svg className="pixel-field" viewBox={`0 0 ${cols * s} ${rows * s}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true">{cells}</svg>
@@ -583,9 +652,8 @@ function Closing() {
     <section className="closing" data-reveal>
       <PixelField />
       <div className="closing-inner">
-        <h2 className="display sm">Read how it is built.</h2>
-        <p className="hero-sub">Every stage: what was planned, what is built, and where they differ.</p>
-        <div className="hero-ctas">
+        <h2 className="display sm"><Words lines={['Read how it is built.']} /></h2>
+        <div className="hero-ctas fx" style={{ '--fx': '550ms' }}>
           <a href={DOCS} className="btn btn-ink btn-lg">Open the system design</a>
           <Command text="make up && make up-app" />
         </div>
@@ -604,7 +672,7 @@ function Footer({ theme, setTheme }) {
     <footer className="lfoot">
       <div className="lfoot-inner">
         <div className="lfoot-brand">
-          <a href="#top" className="lnav-brand"><Logo size={24} /> <span>InfraMind</span></a>
+          <a href="#top" className="lnav-brand lg"><Brand size={30} /></a>
           <p className="lfoot-tag">Root cause first.<br />Evidence always.</p>
           <ThemeSegment theme={theme} setTheme={setTheme} />
         </div>
@@ -618,7 +686,7 @@ function Footer({ theme, setTheme }) {
         </div>
       </div>
       <div className="lfoot-legal">
-        <span>InfraMind · BSc capstone, Department of CSE, BAIUST · 2026</span>
+        <span>InfraMind · 2026</span>
         <span>Status as of {STATUS_DATE}</span>
       </div>
     </footer>
@@ -636,6 +704,7 @@ export default function Landing() {
         <Stats />
         <Pipeline />
         <Method />
+        <Bundle />
         <Research />
         <Stack />
         <BuildLog />
