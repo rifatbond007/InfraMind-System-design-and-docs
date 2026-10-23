@@ -48,9 +48,9 @@ export default function Testbed() {
         <Table head={['Port', 'Service']} rows={[
           ['30090', 'Prometheus'], ['30093', 'Alertmanager'], ['30300', 'Grafana'],
           ['30100', 'Loki gateway'], ['30686', 'Jaeger UI'], ['30317 / 30318', 'OTLP gRPC / HTTP'],
-          ['8080', 'InfraMind API (host); Alertmanager posts to 172.22.0.1:8080'],
+          ['8080', 'InfraMind API (host). Alertmanager posts to a host address chosen at install time: INFRAMIND_HOST_ADDR, else host.docker.internal on Docker Desktop, else the kind network gateway'],
         ]} />
-        <p><b>Gates:</b> <code>make smoke-testbed</code> (6 checks, including a pod-kill visible in all three backends), <code>make smoke-ingestion</code> (5), <code>make smoke-detection</code> (about 7 min). <code>make observe-fault</code> prints before/during/after timelines for any chaos CR.</p>
+        <p><b>Gates:</b> <code>make smoke-testbed</code> (6 checks, including a pod-kill visible in all three backends), <code>make smoke-ingestion</code> (5), <code>make smoke-detection</code> (about 7 min). On 23 Oct, after the webhook host fix, smoke-testbed passed 6/6 and smoke-ingestion 5/5 again on Docker Desktop (the fix is not committed yet). <code>make observe-fault</code> prints before/during/after timelines for any chaos CR.</p>
         <p><b>Partial service graph:</b> adservice, cartservice, shippingservice and emailservice emit no traces. Live-verified edges: frontend → productcatalog, frontend → recommendation, recommendation → productcatalog.</p>
       </Details>
     </Section>

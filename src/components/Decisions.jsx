@@ -3,6 +3,7 @@ import { Section, Table, Pill, Details } from './ui.jsx'
 const rows = [
   ['D1', 'Root cause is chosen deterministically; the LLM only explains.', 'approved'],
   ['D2', 'Graph edges are caller → callee; the RCA walk goes toward callees.', 'pending'],
+  ['D2-NativeGraph', 'Graph and PageRank are native code, not NetworkX (23 Oct).', 'pending'],
   ['D3', 'No deep-learning training; statistical detectors only.', 'approved'],
   ['D4', 'Baselines freeze while an incident is open.', 'approved'],
   ['D5', 'Online Boutique on kind, not Sock Shop.', 'pending'],
@@ -15,12 +16,13 @@ const rows = [
   ['D15', 'Evidence is bundled before ranking, not after.', 'approved'],
   ['D20', 'Postgres is the source of truth; Redis is only the conduit.', 'approved'],
   ['D21', 'ServiceGraph contract owned by the RCA worker.', 'pending'],
-  ['D22', 'Change correlation from a Kubernetes API watch.', 'pending'],
+  ['D22', 'Change correlation from a Kubernetes API watch (watcher deferred 23 Oct).', 'pending'],
   ['D23', 'A top-level scripts/ folder for dev tooling.', 'pending'],
-  ['D24', 'Three pre-commit hooks enforce the standards (not written yet).', 'pending'],
+  ['D24', 'Three pre-commit hooks enforce the standards (simulate mode since 23 Oct).', 'pending'],
   ['D25', 'Commit author is a GitHub username; no AI co-author trailers.', 'pending'],
   ['D26', 'Stress/network scenarios ship marked blocked; pod-level chaos is the live path.', 'pending'],
-  ['D27', 'Four Helm Deployments; alerting in the API, the LLM in the RCA worker.', 'pending'],
+  ['D27', 'Four Helm Deployments; alerting and the LLM folded into existing processes.', 'pending'],
+  ['D27-ApiPipeline', 'RCA publishes on stream:rca-results; the API process stores, explains and alerts (23 Oct).', 'pending'],
   ['D2-Chaos', 'Run chaos-daemon on the containerd runtime.', 'proposed'],
 ]
 

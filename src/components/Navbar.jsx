@@ -9,7 +9,7 @@ const links = [
   { href: '#detection',    label: 'Detection',    s: 'built' },
   { href: '#correlation',  label: 'Correlation',  s: 'built' },
   { href: '#rca',          label: 'Root cause',   s: 'built' },
-  { href: '#alerting',     label: 'Alerting',     s: 'changed' },
+  { href: '#alerting',     label: 'Alerting',     s: 'built' },
   { href: '#evaluation',   label: 'Evaluation',   s: 'changed' },
   { href: '#packaging',    label: 'Packaging',    s: 'built' },
   { href: '#decisions',    label: 'Decisions',    s: null },
@@ -50,7 +50,8 @@ export default function Navbar({ active }) {
   return (
     <nav>
       <div className="nav-inner">
-        <a href="#overview" className="brand">InfraMind</a>
+        <a href="/" className="brand">InfraMind</a>
+        <a href="/" className="nav-link nav-home">← Project home</a>
         {links.map(l => (
           <a
             key={l.href}

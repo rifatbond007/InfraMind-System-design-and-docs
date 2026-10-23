@@ -6,8 +6,8 @@ export default function Packaging() {
       id="packaging"
       eyebrow="Phase P8"
       title="Packaging & deployment"
-      tags={[['built', 'Built'], ['changed', 'Not yet installed']]}
-      summary="One non-root container image, a Helm chart with four Deployments and six Prometheus metrics. The chart passes lint and template checks in CI, but no image has been built or installed on the cluster yet (the dev machine has no Docker daemon)."
+      tags={[['built', 'Image builds'], ['changed', 'Not yet installed']]}
+      summary="One non-root container image, a Helm chart with four Deployments and six Prometheus metrics. The first real image build on 23 Oct found and fixed two defects; the chart passes lint and template checks. An install on the cluster (make up-app) is not recorded yet."
     >
       <Flow
         caption="Four Deployments, not seven: alerting and the LLM run inside existing processes (D27). Monitors are off by default."
@@ -27,12 +27,13 @@ export default function Packaging() {
       />
 
       <PlanBuilt planLabel="Planned (standard 11)" rows={[
-        { name: 'Image', plan: 'Container per component', status: 'built', built: 'Two-stage Dockerfile, runs as uid 10001; each pod overrides the command. .dockerignore keeps secrets and kubeconfigs out.', where: 'Dockerfile, .dockerignore' },
+        { name: 'Image', plan: 'Container per component', status: 'built', built: 'Two-stage Dockerfile, runs as uid 10001; each pod overrides the command. First built 23 Oct: README.md was excluded from the context and the LLM prompt template was not package data — both fixed.', where: 'Dockerfile, .dockerignore, pyproject.toml' },
         { name: 'Helm chart', plan: 'One Deployment per stage', status: 'changed', built: 'Four Deployments: api, ingestion, detection, rca (D27). Ingress off by default; renders 13 objects.', where: 'deploy/helm/inframind/' },
+        { name: 'Secrets', plan: '—', status: 'built', built: 'The webhook secret and OPENAI_API_KEY reach only the api pod through secretKeyRef (envFrom dropped the hyphenated keys, so the api could not start). make env-setup creates an owner-only .env.', where: 'templates/deployment-api.yaml, Makefile' },
         { name: 'RBAC', plan: 'Read-only cluster access', status: 'built', built: 'Namespaced Role, get/list/watch only, on pods, logs, events, config, workloads and HPAs. No ClusterRole.', where: 'templates/rbac.yaml' },
         { name: 'Metrics', plan: 'Self-monitoring', status: 'built', built: 'Six metrics on a private registry: signals received, anomalies emitted, incidents opened, RCA ranking time, LLM call time, alerts sent.', where: 'metrics.py' },
         { name: 'Local stack', plan: '—', status: 'built', built: 'docker-compose grows from 2 to 8 services: Redis, Postgres, api, detection, rca and three collectors.', where: 'docker-compose.yml' },
-        { name: 'On the cluster', plan: 'make up-app', status: 'changed', built: 'Make targets exist (image, image-load, helm-install, up-app). Not yet run: no Docker daemon on the dev box.', where: 'Makefile' },
+        { name: 'On the cluster', plan: 'make up-app', status: 'changed', built: 'Make targets exist (image, image-load, helm-install, up-app). Docker is now available on the dev box; a full make up-app run is not yet recorded.', where: 'Makefile' },
       ]} />
 
       <Details title="Metric names and CI checks">

@@ -80,6 +80,7 @@ nav a.nav-link:hover, nav a.nav-link.active { background: var(--ink); color: var
 .dot.changed { background: var(--warn); }
 .dot.planned { background: transparent; border-style: dashed; }
 nav a.nav-link:not(:has(.dot)) { padding-left: calc(0.6rem + 8px + 0.5rem); }
+nav a.nav-link.nav-home { padding-left: 0.6rem; border-style: dashed; margin-bottom: 0.5rem; }
 .nav-key {
   margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.2rem;
   font-size: 0.62rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em;

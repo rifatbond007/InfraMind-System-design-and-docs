@@ -29,7 +29,7 @@ export default function Glossary() {
           </div>
         ))}
       </dl>
-      <p className="note sources">Sources: <code>infraMind/</code> at branch <code>dev-rifat</code> (CLAUDE.md, docs/decision-tree.md, docs/PROGRESS.md, design specs, src/, testbed/) and the original PRD v1.1. Status as of 21 Oct 2026 (through commit 6583d9c, P8).</p>
+      <p className="note sources">Sources: <code>infraMind/</code> at branch <code>dev-rifat</code> (CLAUDE.md, docs/decision-tree.md, docs/PROGRESS.md, design specs, src/, testbed/) and the original PRD v1.1. Status as of 23 Oct 2026 (through commit 42c0f05, plus the uncommitted testbed and detection work on dev-rifat).</p>
     </section>
   )
 }

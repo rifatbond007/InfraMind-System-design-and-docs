@@ -48,8 +48,8 @@ export default function Ingestion() {
         ]} />
         <p><b>Bus:</b> XADD with approximate MAXLEN 100,000; consumer groups; redelivery after 30 s idle; per-group dedup key with 24 h TTL written before the ACK. Malformed messages are ACKed and dropped; handler errors stay pending.</p>
         <p><b>Service names:</b> <code>service_from_pod</code> strips ReplicaSet and StatefulSet suffixes. For alerts, the service comes from <code>deployment</code>, then <code>pod</code>, then <code>service</code>, then <code>job</code>, because the Prometheus Operator puts the exporter's name in <code>service</code>.</p>
-        <OriginalFigure src="assets/Pasted%20image%20(6).png" label="Four collector types feeding a shared event bus" />
-        <OriginalFigure src="assets/Pasted%20image%20(5).png" label="Data flow from collector to bus" />
+        <OriginalFigure src="/assets/Pasted%20image%20(6).png" label="Four collector types feeding a shared event bus" />
+        <OriginalFigure src="/assets/Pasted%20image%20(5).png" label="Data flow from collector to bus" />
       </Details>
     </Section>
   )

@@ -66,7 +66,7 @@ export default function Evaluation() {
         ['Replay 6,244 recorded signals', '4 s', 'P4 design spec'],
         ['Quiet-cluster false fires (CPU)', '0% of 1,624 samples (was 0.8%)', 'P4 design spec'],
         ['Harness smoke run', 'top-1 1.0 over 10 rows (2 hand-written fixtures × 5)', 'P7 entry, PROGRESS.md'],
-        ['Unit + integration tests', '897 passed, 22 skipped', 'pytest, 21 Oct 2026'],
+        ['Unit + integration tests', '943 passed, 22 skipped (unit alone: 942)', 'make test-all, 23 Oct audit'],
       ]} />
       <p className="note">The harness smoke run only shows the pipeline runs end to end on two small synthetic fixtures. It is not an RCA accuracy result.</p>
 

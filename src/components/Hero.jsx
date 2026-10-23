@@ -20,7 +20,7 @@ export default function Hero() {
     <section id="overview">
       <div className="hero">
         <div className="hero-box">
-          <span className="draft-badge">Build status · 21 Oct 2026</span>
+          <span className="draft-badge">Build status · 23 Oct 2026</span>
           <h1>InfraMind</h1>
           <span className="stripe"></span>
           <p className="tagline">A Kubernetes-based multi-signal incident detection and graph-guided root cause analysis system.</p>
@@ -28,7 +28,7 @@ export default function Hero() {
         </div>
         <div className="hero-stats">
           <div className="stat"><strong>11 / 12</strong>phases coded</div>
-          <div className="stat"><strong>897</strong>tests passing</div>
+          <div className="stat"><strong>943</strong>tests passing</div>
           <div className="stat"><strong>22 s</strong>smoke detect<br/>(target &lt; 60 s)</div>
           <div className="stat"><strong>0</strong>eval results yet</div>
         </div>
@@ -43,10 +43,10 @@ export default function Hero() {
           </li>
         ))}
       </ol>
-      <p className="note">P0–P4b are tested and verified live on the kind cluster. P5–P8 landed on 21 Oct 2026 as tested modules: RCA, the LLM explainer, alerting, storage, the API, a replay-only evaluation harness and a Helm chart. Next: P9 paper.</p>
+      <p className="note">P0–P4b are tested and verified live on the kind cluster. P5–P8 landed on 21 Oct 2026 as tested modules. On 23 Oct a full P0–P9 audit wired RCA to the LLM, alerting and Postgres, fixed the defects it found and removed dead code. Next: a live end-to-end fault run, then the P9 paper.</p>
 
       <div className="callout changed">
-        <b>Not wired end to end yet.</b> The RCA worker ranks every incident but only logs the result. Nothing in the running pipeline calls the LLM explainer, the alert router or the Postgres writer yet; today only the evaluation harness calls them. Dashed arrows in the diagrams mark these missing links.
+        <b>Wired end to end, not yet verified live.</b> Since 23 Oct the RCA worker publishes every ranking on <code>stream:rca-results</code>, and the API process stores the incident in Postgres, asks the LLM for a summary and sends one alert (D27-ApiPipeline). The path is covered by unit and Postgres integration tests; it has not yet been run against a live chaos fault on the cluster.
       </div>
 
       <h3 className="h3">Research question</h3>
@@ -77,7 +77,7 @@ export default function Hero() {
           <li>The LLM only writes the explanation. It never chooses the root cause (D1).</li>
         </ul>
         <p>Team: Md. Rifat Hossain (testbed, chaos, evaluation, packaging), Abdullah All Moneem (ingestion, detection, correlation), Rayhan Islam Prome (RCA, LLM, alerting, storage). BSc capstone, BAIUST CSE. Supervisor: Golam Moktader Nayeem.</p>
-        <OriginalFigure src="assets/Pasted%20image.png" label="InfraMind as a correlation and reasoning layer above existing observability tools" />
+        <OriginalFigure src="/assets/Pasted%20image.png" label="InfraMind as a correlation and reasoning layer above existing observability tools" />
       </Details>
     </section>
   )

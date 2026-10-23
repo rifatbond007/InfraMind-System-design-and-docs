@@ -11,24 +11,25 @@ export default function TechStack() {
       <Table head={['Layer', 'In use', 'Planned / dropped']} rows={[
         ['Language', 'Python ≥ 3.11 (CI 3.11)', '—'],
         ['Runtime libs', 'pydantic 2, redis, httpx, FastAPI, uvicorn, asyncpg, PyYAML, prometheus_client', <><Pill status="changed">Not declared</Pill> openai (imported lazily; falls back to Ollama) · <Pill status="planned">Not added</Pill> networkx (own graph code), Alembic, kubernetes</>],
-        ['Data stores', 'Redis 7 (streams, cursors, dedup); Postgres 16 (schema + API reads)', <><Pill status="changed">Partial</Pill> no pipeline writes to Postgres yet</>],
+        ['Data stores', 'Redis 7 (streams, cursors, dedup); Postgres 16 (written by the API pipeline, read by the API)', 'No migrations tool (Alembic not added)'],
         ['Sources', 'Prometheus, Loki, Jaeger, Alertmanager', <><Pill status="planned">Dropped</Pill> ELK, Datadog, PagerDuty, Grafana webhooks</>],
         ['Infra', 'kind, Helm, Chaos Mesh, Online Boutique', <><Pill status="planned">Dropped</Pill> AWS/GCP/Azure, VMs, AWS FIS</>],
         ['Channels', 'Console, generic webhook', <><Pill status="planned">Deferred</Pill> Slack, email</>],
-        ['Packaging', 'Non-root Dockerfile, Helm chart (4 Deployments), 8-service docker-compose', <><Pill status="changed">Not yet</Pill> image built and installed on kind</>],
+        ['Packaging', 'Non-root Dockerfile, Helm chart (4 Deployments), 8-service docker-compose', <><Pill status="changed">Not yet</Pill> installed on kind (image builds since 23 Oct)</>],
       ]} />
 
       <h3 className="h3">Testing & CI</h3>
       <div className="hero-stats inline">
-        <div className="stat"><strong>897</strong>passed</div>
+        <div className="stat"><strong>942</strong>unit passed</div>
+        <div className="stat"><strong>943</strong>with integration</div>
         <div className="stat"><strong>22</strong>skipped (live backends)</div>
-        <div className="stat"><strong>9.2 s</strong>full suite</div>
         <div className="stat"><strong>0</strong>e2e tests</div>
       </div>
       <Bullets items={[
         'Unit tests added on 21 Oct by area: evaluation 74, rca 71, llm 66, api 65, storage 50, alerting 26. Earlier: detection 81, ingestion 64, common 63, correlation 61, plus repo-level checks (module rules, metadata drift, smoke-gate logic).',
         'Fakes instead of servers: fakeredis and httpx.MockTransport.',
-        'CI on every push: ruff, ruff format, mypy, pytest, hadolint (now blocking) and a new helm-lint job. A passing GitHub Actions run has not been recorded yet; the dev-rifat branch is not pushed.',
+        'CI on every push: ruff, ruff format, mypy, pytest, hadolint (blocking) and helm-lint. Pre-commit also runs the three D24 hooks (module rules, commit trailers, PROGRESS row) in simulate mode, to become enforcing after a week.',
+        'The 23 Oct audit removed 7 unreferenced functions, 3 never-raised exceptions and 2 unused dev dependencies, and made make test unit-only again.',
       ]} />
 
       <Details title="Versions">

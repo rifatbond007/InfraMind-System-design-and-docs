@@ -27,7 +27,7 @@ export default function Correlation() {
         { name: 'Fingerprint / dedup', plan: 'Cooldown window', status: 'built', built: 'sha256("first service | 5-min bucket")[:16], fixed at open.', where: 'correlation/fingerprint.py' },
         { name: 'Severity', plan: 'Criticality + blast radius', status: 'built', built: 'Critical if any anomaly is critical, ≥ 3 services, or ≥ 20 anomalies.', where: 'correlation/tracker.py' },
         { name: 'Alertmanager signals', plan: 'Alert consumer feeds correlation', status: 'changed', built: 'Attached as corroboration only; never open an incident. Keeps raw Alertmanager clean as a baseline.', where: 'correlation/tracker.py' },
-        { name: 'Persistence', plan: 'Storage & audit', status: 'partial', built: 'Tracker state is still in memory and lost on restart. The Postgres incidents table exists (P6) but the tracker does not write to it, and an API ack does not reach the tracker.', where: 'correlation/tracker.py, storage/incidents.py' },
+        { name: 'Persistence', plan: 'Storage & audit', status: 'partial', built: 'Tracker state is still in memory and lost on restart. Since 23 Oct incidents reach Postgres through RCA and the API pipeline, but an API ack still does not reach the tracker.', where: 'correlation/tracker.py, api/pipeline.py' },
       ]} />
 
       <Details title="Parameters and publishing rules">
@@ -42,7 +42,7 @@ export default function Correlation() {
           'The worker retries failed publishes from an outbox, and only resolves incidents while the stream is live.',
           'Gap: the P4b design\'s live "grouped" check was never added to the smoke gate.',
         ]} />
-        <OriginalFigure src="assets/Pasted%20image%20(7).png" label="Cross-pillar correlation by service, layer and time window" />
+        <OriginalFigure src="/assets/Pasted%20image%20(7).png" label="Cross-pillar correlation by service, layer and time window" />
       </Details>
     </Section>
   )

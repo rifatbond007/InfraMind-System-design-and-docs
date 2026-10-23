@@ -18,6 +18,12 @@ import Glossary from './components/Glossary.jsx'
 export default function App() {
   const [active, setActive] = useState('overview')
 
+  // Deep links from the landing page (/system-design/#rca) arrive before React renders the target.
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1))
+    if (id) document.getElementById(id)?.scrollIntoView()
+  }, [])
+
   useEffect(() => {
     const sections = document.querySelectorAll('section[id]')
     let ticking = false

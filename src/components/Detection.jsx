@@ -48,8 +48,9 @@ export default function Detection() {
           'All 6 metric anomalies seen were CPU drops when traffic stopped, so CPU and memory now alert only on increases.',
           'A single-poll p95 rule fired on 16% of frontend polls; 2 consecutive polls cut it to 2%.',
           'A regression test replays 3,516 quiet-cluster samples (89 min) and must produce no anomalies.',
+          'In progress (uncommitted on dev-rifat, 23 Oct): memory must breach on 2 distinct scrapes before it fires, because a live run saw paymentservice heaps jump 30–50 MB for a single scrape before a GC.',
         ]} />
-        <OriginalFigure src="assets/Pasted%20image%20(8).png" label="Per-signal-type anomaly models" />
+        <OriginalFigure src="/assets/Pasted%20image%20(8).png" label="Per-signal-type anomaly models" />
       </Details>
     </Section>
   )
