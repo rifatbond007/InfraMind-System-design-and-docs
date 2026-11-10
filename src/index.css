@@ -273,6 +273,7 @@ td .pill { margin-right: 0.3rem; }
 .callout { border: 2px solid var(--ink); padding: 0.8rem 1rem; margin: 0 0 1.25rem; font-size: 0.9rem; line-height: 1.5; }
 .callout.blocked { background: var(--bad); color: var(--bad-ink); }
 .callout.changed { background: var(--warn); color: var(--warn-ink); }
+.callout.built { background: var(--ok); color: var(--ok-ink); }
 
 .asks { display: flex; flex-direction: column; border: 2px solid var(--ink); background: var(--surface); }
 .ask { display: grid; grid-template-columns: 6.5rem 1fr; border-top: 1.5px solid var(--ink); }

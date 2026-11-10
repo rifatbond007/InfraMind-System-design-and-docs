@@ -4,18 +4,18 @@
 
 Design and build-status documentation for **InfraMind**, a Kubernetes-based multi-signal incident detection and graph-guided root cause analysis system (BSc capstone, BAIUST CSE).
 
-The site shows, for every part of the system, **what was planned, what is built, and where they differ**. The implementation lives in the separate `infraMind` repository.
+The site shows, for every part of the system, **what was planned, what is built, and where they differ**. The implementation lives in the separate `infraMind` repository (`inframind-core`).
 
-## Status (23 Oct 2026)
+## Status (10 Nov 2026)
 
 | Phase | State |
 |---|---|
 | P0–P4b: tooling, testbed, signal schema + Redis bus, ingestion, detection, correlation | Built, tested and verified live |
-| P5 RCA, P5b LLM explainer, P6 alerting + storage + API, P8 Helm packaging | Built, tested and wired end to end (943 tests pass, 22 skipped) |
+| P5 RCA, P5b LLM explainer, P6 alerting + storage + API, P8 Helm packaging | Built, tested and wired end to end; seen live on the testbed (969 tests pass) |
 | P7 evaluation | Harness built, replay only; no results yet |
 | P9 paper | Not started |
 
-Since the 23 Oct audit the RCA worker publishes each ranking on `stream:rca-results`, and the API process stores the incident, asks the LLM for a summary and sends one alert (D27-ApiPipeline). Open items: that path has not yet been run against a live fault; Chaos Mesh only injects pod-level faults on the kind testbed (containerd runtime mismatch), which blocks 6 of 14 scenarios.
+Since 10 Nov (D28) the `rca` process runs `python -m inframind.main`: the RCA worker plus a hook that stores every ranked incident in Postgres, asks a hosted LLM (Groq by default) for a summary when an alert is due, sends the alert and records it with audit rows. A live traffic burst went through every stage to the API. Open items: a run with an LLM key set, a live chaos fault, supervisor review of D28; Chaos Mesh only injects pod-level faults on the kind testbed (containerd runtime mismatch), which blocks 6 of 14 scenarios.
 
 ## Reading the site
 

@@ -6,7 +6,7 @@ import {
   useReveal, useScrolled, useCycle, useReady, Words, Scramble,
 } from './parts.jsx'
 
-const STATUS_DATE = '23 Oct 2026'
+const STATUS_DATE = '10 Nov 2026'
 const GITHUB = 'https://github.com/rifatbond007/inframind-core'
 
 // Deterministic pseudo-random numbers so the decorative graphics render the same every time.
@@ -107,7 +107,7 @@ function Console() {
       <div className="console-body">
         <aside className="c-side">
           <p className="c-eyebrow">Streams</p>
-          {['signals', 'incidents', 'graph-updates', 'rca-results'].map((s, i) => (
+          {['signals', 'incidents', 'graph-updates'].map((s, i) => (
             <p key={s} className="c-stream"><span className="live" style={{ '--d': `${i * 400}ms` }} />stream:{s}</p>
           ))}
           <p className="c-eyebrow mt">Incidents</p>
@@ -175,7 +175,7 @@ function Hero() {
 
 /* ───────────────────────── Integrations marquee ───────────────────────── */
 
-const TOOLS = ['Kubernetes', 'Prometheus', 'Alertmanager', 'Loki', 'Jaeger', 'Helm', 'Redis', 'PostgreSQL', 'OpenAI', 'Ollama']
+const TOOLS = ['Kubernetes', 'Prometheus', 'Alertmanager', 'Loki', 'Jaeger', 'Grafana', 'Helm', 'Redis', 'PostgreSQL', 'Groq', 'Ollama']
 
 function Integrations() {
   const row = [...TOOLS, ...TOOLS]
@@ -519,7 +519,7 @@ function Bundle() {
 const TRUST = [
   ['lock', 'Read-only access', 'Only get, list and watch. It never changes your cluster.'],
   ['eye', 'Redacted first', 'Secrets, tokens and emails are stripped before any LLM call.'],
-  ['cpu', 'No OpenAI needed', 'Falls back to a local Ollama model, then a plain template.'],
+  ['cpu', 'Any OpenAI-compatible LLM', 'Groq by default. No key or a failed call gives a plain template summary.'],
   ['list', 'Full audit log', 'Every alert, ack and resolve is recorded.'],
   ['pulse', 'Watches itself', 'Six Prometheus metrics about its own health.'],
   ['api', 'Simple API', 'List, acknowledge and resolve incidents over HTTP.'],
@@ -613,7 +613,7 @@ function Alerts() {
 function Quickstart() {
   const steps = [
     ['Start a test cluster', 'make up', 'kind, a demo shop, Prometheus, Loki and Jaeger.'],
-    ['Add your settings', 'make env-setup', 'Creates a private .env. An OpenAI key is optional.'],
+    ['Add your settings', 'make env-setup', 'Creates a private .env. An LLM API key (LLM_API_KEY) is optional.'],
     ['Install InfraMind', 'make up-app', 'Builds the image and installs the Helm chart.'],
   ]
   return (
@@ -669,7 +669,7 @@ function Roadmap() {
 
 const FAQ = [
   ['Does the AI decide the root cause?', 'No. A fixed, repeatable ranking picks it. The LLM only writes the summary, and every claim must cite evidence.'],
-  ['Do I need an OpenAI key?', 'No. Without one it uses a local Ollama model, and if that is down, a plain template.'],
+  ['Do I need an LLM API key?', 'No. Without one the alert carries a plain template summary. With a key (Groq by default, or any OpenAI-compatible API) the LLM writes it. A local Ollama fallback can be switched on.'],
   ['What access does it need?', 'Read-only access to your cluster, plus your Prometheus, Loki and Jaeger.'],
   ['Is it production-ready?', 'Not yet. It is a preview, tested on a local kind cluster running a demo shop.'],
   ['Is it free?', 'Yes. It is open source under the MIT license.'],
