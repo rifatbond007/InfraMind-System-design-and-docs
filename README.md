@@ -15,7 +15,7 @@ The site shows, for every part of the system, **what was planned, what is built,
 | P7 evaluation | Harness built, replay only; no results yet |
 | P9 paper | Not started |
 
-Since 10 Nov (D28) the `rca` process runs `python -m inframind.main`: the RCA worker plus a hook that stores every ranked incident in Postgres, asks a hosted LLM (Groq by default) for a summary when an alert is due, sends the alert and records it with audit rows. A live traffic burst went through every stage to the API. Open items: a run with an LLM key set, a live chaos fault, supervisor review of D28; Chaos Mesh only injects pod-level faults on the kind testbed (containerd runtime mismatch), which blocks 6 of 14 scenarios.
+Since 10 Nov (D28) the `rca` process runs `python -m inframind.main`: the RCA worker plus a hook that stores every ranked incident in Postgres, asks a hosted LLM (Groq by default) for a summary when an alert is due, sends the alert and records it with audit rows. A live traffic burst went through every stage to the API. A live run with a Groq key returned an accepted LLM summary. Open items: a live chaos fault, supervisor review of D28; Chaos Mesh only injects pod-level faults on the kind testbed (containerd runtime mismatch), which blocks 6 of 14 scenarios.
 
 ## Reading the site
 

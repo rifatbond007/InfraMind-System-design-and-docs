@@ -46,7 +46,7 @@ export default function Hero() {
 
       <div className="callout built">
         <b>Works end to end (10 Nov).</b> A test fault went all the way through: detected → grouped into an incident → root cause ranked → saved → explained → alerted → visible in the API.
-        <br /><b>Still to do:</b> test with a real LLM key, run real chaos faults, write the paper.
+        <br /><b>Still to do:</b> run real chaos faults, get evaluation results, write the paper.
       </div>
 
       <h3 className="h3">Goals vs. what we have today</h3>

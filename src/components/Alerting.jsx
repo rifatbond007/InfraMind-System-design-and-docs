@@ -6,7 +6,7 @@ export default function Alerting() {
       id="alerting"
       eyebrow="Stage 5 · Phases P5b–P6"
       title="Save, explain & alert"
-      tags={[['built', 'Built and working'], ['changed', 'Real LLM not tested live']]}
+      tags={[['built', 'Built and working'], ['built', 'Groq LLM tested live']]}
       summary="Each incident is saved, explained in plain words by an LLM, and sent as one alert."
     >
       <Flow
