@@ -1,6 +1,6 @@
 // InfraMind product landing page. The system design docs live at /system-design/ (the "Docs" tab).
 // Every fact here comes from the infraMind repo; numbers from development smoke runs are labelled.
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   DOCS, Brand, useTheme, ThemeIconButton, ThemeSegment, DotNumber, Command,
   useReveal, useScrolled, useCycle, useReady, Words, Scramble,
@@ -144,9 +144,11 @@ function Console() {
           <div className="c-msg">
             cartservice errors rose first <span className="cite">ev-3</span>, then checkout calls to it failed <span className="cite">ev-5</span>.
           </div>
-          <div className="c-alert">
-            <span className="sq ok" /> 1 alert sent
-          </div>
+          <ul className="c-done">
+            <li><span className="sq ok" />Saved with evidence</li>
+            <li><span className="sq ok" />Explained by the LLM</li>
+            <li><span className="sq ok" />1 alert sent</li>
+          </ul>
         </aside>
       </div>
     </div>
@@ -240,7 +242,20 @@ function Plane({ cy, active, fill }) {
   return <path d={d} className={'plane' + (active ? ' active' : '') + (fill ? ' fill' : '')} />
 }
 
+function useNarrow(max = 900) {
+  const q = `(max-width: ${max}px)`
+  const [narrow, setNarrow] = useState(() => typeof window !== 'undefined' && window.matchMedia(q).matches)
+  useEffect(() => {
+    const m = window.matchMedia(q)
+    const on = () => setNarrow(m.matches)
+    m.addEventListener('change', on)
+    return () => m.removeEventListener('change', on)
+  }, [q])
+  return narrow
+}
+
 function Layers({ active }) {
+  const narrow = useNarrow()
   const r = rng(11)
   const kinds = ['k-metric', 'k-log', 'k-trace', 'k-alert']
   const cloud = Array.from({ length: 70 }, (_, i) => {
@@ -259,7 +274,7 @@ function Layers({ active }) {
 
   const y = i => TOP + i * ROW
   return (
-    <svg className="layers" viewBox={`0 0 600 ${TOP * 2 + ROW * 4 + 20}`} role="img" aria-label="Five pipeline stages drawn as stacked layers: signals, anomalies, incident, service graph, alert">
+    <svg className="layers" viewBox={narrow ? `160 0 364 ${TOP * 2 + ROW * 4 + 20}` : `0 0 600 ${TOP * 2 + ROW * 4 + 20}`} role="img" aria-label="Five pipeline stages drawn as stacked layers: signals, anomalies, incident, service graph, alert">
       <line x1={CX - PW} y1={y(0)} x2={CX - PW} y2={y(4)} className="guide" />
       <line x1={CX + PW} y1={y(0)} x2={CX + PW} y2={y(4)} className="guide" />
       {STEPS.map((_, i) => (
@@ -322,7 +337,7 @@ function Pipeline() {
   return (
     <section className="block" id="pipeline">
       <div className="center-head" data-reveal>
-        <p className="eyebrow accent"><Scramble text="How it works" /></p>
+        <p className="eyebrow accent"><Scramble text="01 — How it works" /></p>
         <h2 className="h2"><Words lines={['From noise', 'to one answer.']} /></h2>
       </div>
       <div className="layer-card" ref={ref} data-reveal onMouseLeave={() => setPause(false)}>
@@ -357,22 +372,24 @@ function WeightBars() {
 }
 
 function MiniGraph() {
-  const N = { frontend: [60, 40], checkout: [190, 40], productcatalog: [190, 120], cart: [320, 40], 'redis-cart': [440, 40], recommendation: [60, 120] }
+  const N = { frontend: [52, 34], checkout: [180, 34], cart: [308, 34], recommendation: [52, 114], productcatalog: [180, 114], 'redis-cart': [308, 114] }
   const E = [['frontend', 'checkout'], ['frontend', 'productcatalog'], ['recommendation', 'productcatalog'], ['checkout', 'cart'], ['cart', 'redis-cart']]
   const hot = ['frontend-checkout', 'checkout-cart']
   return (
     <div className="viz">
-      <svg viewBox="0 0 500 160" className="minigraph" role="img" aria-label="Walk from frontend toward its callees reaches cartservice">
+      <svg viewBox="0 0 360 148" className="minigraph" role="img" aria-label="Walk from frontend toward its callees reaches cartservice">
         <defs><marker id="mg-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" /></marker></defs>
         {E.map(([a, b]) => {
           const [x1, y1] = N[a], [x2, y2] = N[b]
           const on = hot.includes(`${a}-${b}`)
-          const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy), k = 34 / len
+          const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy)
+          // stop each line at the pill's edge so the arrowhead stays visible
+          const edge = Math.min(dx ? 50 / Math.abs(dx / len) : Infinity, dy ? 15 / Math.abs(dy / len) : Infinity) + 4, k = edge / len
           return <line key={a + b} x1={x1 + dx * k} y1={y1 + dy * k} x2={x2 - dx * k} y2={y2 - dy * k} className={on ? 'hot' : ''} markerEnd="url(#mg-arr)" />
         })}
         {Object.entries(N).map(([k, [x, y]]) => (
           <g key={k} className={k === 'cart' ? 'root' : k === 'frontend' ? 'start' : ''}>
-            <rect x={x - 52} y={y - 14} width="104" height="28" rx="14" />
+            <rect x={x - 50} y={y - 15} width="100" height="30" rx="15" />
             <text x={x} y={y + 4} textAnchor="middle">{k}</text>
           </g>
         ))}
@@ -418,7 +435,7 @@ function Method() {
   return (
     <section className="block" id="features">
       <div className="left-head" data-reveal>
-        <p className="eyebrow accent"><Scramble text="01 — Features" /></p>
+        <p className="eyebrow accent"><Scramble text="02 — Features" /></p>
         <h2 className="h2"><Words lines={['Built for the', '3 a.m. page.']} /></h2>
       </div>
       <div className="grid-2">
@@ -434,85 +451,6 @@ function Method() {
   )
 }
 
-
-/* ───────────────────────── Evidence bundle (hub) ───────────────────────── */
-
-const ICONS = {
-  metric: <path d="M4 18l5-6 4 3 7-9" />,
-  log: <path d="M5 7h14M5 12h10M5 17h12" />,
-  trace: <path d="M4 6h9M7 12h11M10 18h8" />,
-  baseline: <path d="M3 14c3 0 3-5 6-5s3 7 6 7 3-4 6-4" />,
-  db: <><ellipse cx="12" cy="6" rx="7" ry="3" /><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3" /></>,
-  text: <path d="M12 3l1.8 4.8L19 9.5l-5.2 1.7L12 16l-1.8-4.8L5 9.5l5.2-1.7z" />,
-  bell: <path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0" />,
-  file: <><path d="M6 3h9l4 4v14H6z" /><path d="M14 3v5h5M9 13h7M9 17h5" /></>,
-}
-
-function Ico({ name }) {
-  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{ICONS[name]}</svg>
-}
-
-// Curved connectors between a column of boxes and the centre card. `ys` are box centres (0–100 scale).
-function Wires({ ys, side }) {
-  const mid = 50
-  return (
-    <svg className={'wires ' + side} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-      {ys.map((y, i) => {
-        const d = side === 'in'
-          ? `M0,${y} C55,${y} 45,${mid} 100,${mid}`
-          : `M0,${mid} C55,${mid} 45,${y} 100,${y}`
-        return (
-          <g key={i}>
-            <path d={d} className="wire" vectorEffect="non-scaling-stroke" />
-            <path d={d} className="spark" vectorEffect="non-scaling-stroke" pathLength="100" style={{ '--d': `${i * 0.45}s` }} />
-          </g>
-        )
-      })}
-    </svg>
-  )
-}
-
-function Bundle() {
-  const inputs = [['metric', 'Metrics'], ['log', 'Logs'], ['trace', 'Traces'], ['baseline', 'Baselines']]
-  const outputs = [['db', 'Stored'], ['text', 'Summary'], ['bell', 'Alert']]
-  return (
-    <section className="block" id="bundle">
-      <div className="hub-head" data-reveal>
-        <div>
-          <p className="eyebrow accent"><Scramble text="Introducing the evidence bundle" /></p>
-          <h2 className="h2"><Words lines={['One record every', 'stage can read.']} /></h2>
-        </div>
-        <div className="hub-side fx" style={{ '--fx': '300ms' }}>
-          <p>Every suspect carries its evidence. Storage, summary and alert all read the same record.</p>
-          <a href={`${DOCS}#rca`} className="btn btn-outline">
-            <span className="btn-ico"><Ico name="file" /></span>
-            Read the RCA docs
-          </a>
-        </div>
-      </div>
-      <div className="hub" data-reveal>
-        <div className="hub-col">
-          {inputs.map(([ic, t], i) => (
-            <div className="hub-node fx" key={t} style={{ '--fx': `${200 + i * 90}ms` }}><Ico name={ic} /><span>{t}</span></div>
-          ))}
-        </div>
-        <Wires side="in" ys={[10, 36.7, 63.3, 90]} />
-        <div className="hub-card fx" style={{ '--fx': '150ms' }}>
-          <div className="hub-card-head"><Ico name="file" /><b>evidence bundle</b></div>
-          <div className="hub-field"><code># Suspects</code><small>ranked services</small></div>
-          <div className="hub-field"><code># Evidence</code><small>what each one shows</small></div>
-          <div className="hub-field"><code># Citations</code><small>ids the summary quotes</small></div>
-        </div>
-        <Wires side="out" ys={[16.7, 50, 83.3]} />
-        <div className="hub-col out">
-          {outputs.map(([ic, t], i) => (
-            <div className="hub-node fx" key={t} style={{ '--fx': `${500 + i * 90}ms` }}><Ico name={ic} /><span>{t}</span></div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
 
 /* ───────────────────────── Trust ───────────────────────── */
 
@@ -538,7 +476,7 @@ function Trust() {
   return (
     <section className="block" id="trust">
       <div className="center-head" data-reveal>
-        <p className="eyebrow accent"><Scramble text="02 — Safe by default" /></p>
+        <p className="eyebrow accent"><Scramble text="03 — Safe by default" /></p>
         <h2 className="h2"><Words lines={['Looks at everything.', 'Touches nothing.']} /></h2>
       </div>
       <div className="trust-grid" data-reveal>
@@ -566,7 +504,7 @@ function Alerts() {
     <section className="block" id="alerts">
       <div className="alerts-grid">
         <div className="alerts-copy" data-reveal>
-          <p className="eyebrow accent"><Scramble text="03 — Alerts & API" /></p>
+          <p className="eyebrow accent"><Scramble text="04 — Alerts & API" /></p>
           <h2 className="h2"><Words lines={['Alerts your team', 'can act on.']} /></h2>
           <p className="lead-left fx" style={{ '--fx': '300ms' }}>Each alert names the likely cause, the services affected and the evidence behind it.</p>
           <ul className="channels fx" style={{ '--fx': '420ms' }}>
@@ -620,7 +558,7 @@ function Quickstart() {
     <section className="block" id="quickstart">
       <div className="left-head row" data-reveal>
         <div>
-          <p className="eyebrow accent"><Scramble text="04 — Quickstart" /></p>
+          <p className="eyebrow accent"><Scramble text="05 — Quickstart" /></p>
           <h2 className="h2"><Words lines={['Running in', 'three commands.']} /></h2>
         </div>
         <a href={`${DOCS}#packaging`} className="link-arrow">Full setup guide →</a>
@@ -650,7 +588,7 @@ function Roadmap() {
   return (
     <section className="block" id="roadmap">
       <div className="center-head" data-reveal>
-        <p className="eyebrow accent"><Scramble text="05 — Roadmap" /></p>
+        <p className="eyebrow accent"><Scramble text="06 — Roadmap" /></p>
         <h2 className="h2"><Words lines={['Shipping in the open.']} /></h2>
       </div>
       <div className="road-grid">
@@ -771,7 +709,6 @@ export default function Landing() {
         <Stats />
         <Pipeline />
         <Method />
-        <Bundle />
         <Trust />
         <Alerts />
         <Quickstart />
