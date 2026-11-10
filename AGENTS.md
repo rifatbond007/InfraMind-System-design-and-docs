@@ -2,7 +2,7 @@
 
 ## Repository type
 
-Documentation site for InfraMind. The implementation lives in the sibling repo `../infraMind`; this repo documents its design and build status for the research supervisor. Build tooling: Vite + React 18 (`npm run dev`, `npm run build` → `dist/`), multi-page: `index.html` (landing page at `/`) and `system-design/index.html` (docs at `/system-design/`, the landing page's "Docs" tab). No tests.
+Documentation site for InfraMind. The implementation lives in the sibling repo `../inframind-core`; this repo documents its design and build status for the research supervisor. Build tooling: Vite + React 18 (`npm run dev`, `npm run build` → `dist/`), multi-page: `index.html` (landing page at `/`) and `system-design/index.html` (docs at `/system-design/`, the landing page's "Docs" tab). No tests.
 
 ## What's here
 
@@ -21,6 +21,7 @@ Documentation site for InfraMind. The implementation lives in the sibling repo `
 ## Writing rules
 
 - Every section follows the same pattern: one-line summary with status pills → `Flow` diagram → `PlanBuilt` table → `Details` for depth. Keep the main view short.
+- Write in plain, simple language: one short sentence per summary, plain diagram labels, one short line per `PlanBuilt` row, no file paths in the main view, 2–4 bullets in `Details`.
 - The "Plan" column is PRD v1.1 unless labelled otherwise; note where the July 2026 proposal or a decision in `infraMind/docs/decision-tree.md` changed it.
 - Only state facts that are in the `infraMind` repo. Label development smoke-run numbers as such; there are no evaluation results yet.
 - Use the status vocabulary consistently: `built`, `changed`, `partial`, `blocked`, `planned`, `external`.

@@ -157,8 +157,8 @@ function Hero() {
   const ready = useReady()
   return (
     <section className={'hero-panel' + (ready ? ' ready' : '')} id="top">
-      <a href={`${DOCS}#architecture`} className="announce fx" style={{ '--fx': '0ms' }}>
-        <span className="new">PREVIEW</span> Now wired end to end <span aria-hidden="true">→</span>
+      <a href={`${DOCS}#alerting`} className="announce fx" style={{ '--fx': '0ms' }}>
+        <span className="new">NEW</span> Runs end to end: detect, explain, alert <span aria-hidden="true">→</span>
       </a>
       <h1 className="display"><Words lines={['One alert.', 'The real root cause.']} base={120} /></h1>
       <p className="hero-sub fx" style={{ '--fx': '650ms' }}>InfraMind turns a flood of Kubernetes signals into one incident, and tells you which service caused it, with proof.</p>
@@ -520,8 +520,8 @@ const TRUST = [
   ['lock', 'Read-only access', 'Only get, list and watch. It never changes your cluster.'],
   ['eye', 'Redacted first', 'Secrets, tokens and emails are stripped before any LLM call.'],
   ['cpu', 'Any OpenAI-compatible LLM', 'Groq by default. No key or a failed call gives a plain template summary.'],
-  ['list', 'Full audit log', 'Every alert, ack and resolve is recorded.'],
-  ['pulse', 'Watches itself', 'Six Prometheus metrics about its own health.'],
+  ['list', 'Full audit log', 'Every LLM call, alert, ack and resolve is recorded.'],
+  ['pulse', 'Watches itself', 'Six health metrics and a ready-made Grafana dashboard.'],
   ['api', 'Simple API', 'List, acknowledge and resolve incidents over HTTP.'],
 ]
 
@@ -612,9 +612,9 @@ function Alerts() {
 
 function Quickstart() {
   const steps = [
-    ['Start a test cluster', 'make up', 'kind, a demo shop, Prometheus, Loki and Jaeger.'],
-    ['Add your settings', 'make env-setup', 'Creates a private .env. An LLM API key (LLM_API_KEY) is optional.'],
-    ['Install InfraMind', 'make up-app', 'Builds the image and installs the Helm chart.'],
+    ['Add your settings', 'make env-setup', 'Creates a private .env. An LLM key is optional.'],
+    ['Start everything', 'make up', 'A test cluster, a demo shop, monitoring and InfraMind.'],
+    ['See incidents', 'curl localhost:8080/incidents', 'Or open the Grafana dashboard on port 30300.'],
   ]
   return (
     <section className="block" id="quickstart">
@@ -643,8 +643,8 @@ function Quickstart() {
 
 function Roadmap() {
   const cols = [
-    ['Shipped', 'built', ['Anomaly detection', 'Incident grouping', 'Root cause ranking', 'Evidence-cited summaries', 'Alerts and incident API', 'Helm chart']],
-    ['In progress', 'changed', ['Live end-to-end runs', 'Benchmark results']],
+    ['Shipped', 'built', ['Anomaly detection', 'Incident grouping', 'Root cause ranking', 'LLM summaries with evidence', 'Alerts and incident API', 'Live end-to-end pipeline', 'Grafana dashboard']],
+    ['In progress', 'changed', ['Real chaos-fault runs', 'Benchmark results', 'Helm install on the cluster']],
     ['Next', 'planned', ['Slack and email alerts', 'Kubernetes change tracking', 'Network and stress faults']],
   ]
   return (
@@ -671,7 +671,7 @@ const FAQ = [
   ['Does the AI decide the root cause?', 'No. A fixed, repeatable ranking picks it. The LLM only writes the summary, and every claim must cite evidence.'],
   ['Do I need an LLM API key?', 'No. Without one the alert carries a plain template summary. With a key (Groq by default, or any OpenAI-compatible API) the LLM writes it. A local Ollama fallback can be switched on.'],
   ['What access does it need?', 'Read-only access to your cluster, plus your Prometheus, Loki and Jaeger.'],
-  ['Is it production-ready?', 'Not yet. It is a preview, tested on a local kind cluster running a demo shop.'],
+  ['Is it production-ready?', 'Not yet. It is a preview. The full pipeline runs on a local test cluster with a demo shop.'],
   ['Is it free?', 'Yes. It is open source under the MIT license.'],
 ]
 
