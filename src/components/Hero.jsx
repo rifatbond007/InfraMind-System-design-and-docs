@@ -20,16 +20,16 @@ export default function Hero() {
     <section id="overview">
       <div className="hero">
         <div className="hero-box">
-          <span className="draft-badge">Build status · 21 Oct 2026</span>
+          <span className="draft-badge">Build status · 10 Nov 2026</span>
           <h1>InfraMind</h1>
           <span className="stripe"></span>
-          <p className="tagline">A Kubernetes-based multi-signal incident detection and graph-guided root cause analysis system.</p>
-          <p className="hero-goal">When a fault hits a Kubernetes microservice app, say which service is the root cause, show the evidence, and send <strong>one</strong> deduplicated alert.</p>
+          <p className="tagline">Finds the root cause of faults in Kubernetes apps.</p>
+          <p className="hero-goal">When something breaks, InfraMind says <strong>which service caused it</strong>, shows the evidence, and sends <strong>one</strong> alert instead of many.</p>
         </div>
         <div className="hero-stats">
-          <div className="stat"><strong>11 / 12</strong>phases coded</div>
-          <div className="stat"><strong>897</strong>tests passing</div>
-          <div className="stat"><strong>22 s</strong>smoke detect<br/>(target &lt; 60 s)</div>
+          <div className="stat"><strong>11 / 12</strong>phases built</div>
+          <div className="stat"><strong>969</strong>tests passing</div>
+          <div className="stat"><strong>21 s</strong>to detect a fault<br/>(goal &lt; 60 s)</div>
           <div className="stat"><strong>0</strong>eval results yet</div>
         </div>
       </div>
@@ -43,41 +43,34 @@ export default function Hero() {
           </li>
         ))}
       </ol>
-      <p className="note">P0–P4b are tested and verified live on the kind cluster. P5–P8 landed on 21 Oct 2026 as tested modules: RCA, the LLM explainer, alerting, storage, the API, a replay-only evaluation harness and a Helm chart. Next: P9 paper.</p>
 
-      <div className="callout changed">
-        <b>Not wired end to end yet.</b> The RCA worker ranks every incident but only logs the result. Nothing in the running pipeline calls the LLM explainer, the alert router or the Postgres writer yet; today only the evaluation harness calls them. Dashed arrows in the diagrams mark these missing links.
+      <div className="callout built">
+        <b>Works end to end (10 Nov).</b> A test fault went all the way through: detected → grouped into an incident → root cause ranked → saved → explained → alerted → visible in the API.
+        <br /><b>Still to do:</b> run real chaos faults, get evaluation results, write the paper.
       </div>
 
-      <h3 className="h3">Research question</h3>
-      <p className="lede">Can ingesting and correlating logs, metrics, traces and alerts <strong>(1)</strong> cut mean time to detect, <strong>(2)</strong> reduce alert noise through dedup and correlation, and <strong>(3)</strong> give automated root cause analysis that speeds up diagnosis?</p>
-
-      <h3 className="h3">Success targets vs. current evidence</h3>
+      <h3 className="h3">Goals vs. what we have today</h3>
       <Table
-        head={['Metric', 'Target (proposal)', 'Evidence today']}
+        head={['Goal', 'Target', 'Today']}
         className="targets"
         rows={[
-          ['MTTD', '< 60 s', <><Pill status="changed">Smoke only</Pill> 22–28 s on a live burst (P4 gate)</>],
-          ['Alert precision', '≥ 75%', <Pill status="planned">P7</Pill>],
-          ['Alert recall', '≥ 70%', <Pill status="planned">P7</Pill>],
-          ['Noise reduction vs raw alerts', '≥ 40%', <><Pill status="changed">Smoke only</Pill> 6 incidents → 1 (unit test, not yet live)</>],
-          ['RCA exact / top-3', '≥ 60% / ≥ 75%', <><Pill status="changed">Smoke only</Pill> top-1 1.0 on 2 hand-written replay fixtures; not a result</>],
-          ['RCA latency', '< 120 s', <Pill status="planned">P7 live runs</Pill>],
-          ['False positive rate', '< 25%', <Pill status="planned">Soak run in P7</Pill>],
-          ['Fault scenarios', '≥ 10 (now ≥ 12)', <><Pill status="blocked">14 written, 6 blocked</Pill> 8 pod-level scenarios can run</>],
+          ['Time to detect', '< 60 s', <><Pill status="changed">Test run</Pill> 21–28 s</>],
+          ['Alert precision / recall', '≥ 75% / ≥ 70%', <Pill status="planned">Not measured</Pill>],
+          ['Fewer alerts than raw', '≥ 40% fewer', <><Pill status="changed">Unit test</Pill> 6 → 1</>],
+          ['Right root cause (top-1 / top-3)', '≥ 60% / ≥ 75%', <Pill status="planned">Not measured</Pill>],
+          ['Fault scenarios', '≥ 12', <><Pill status="blocked">14 written, 6 blocked</Pill></>],
         ]}
       />
-      <p className="note">Smoke-run numbers come from development gates on one machine. They are not evaluation results.</p>
+      <p className="note">"Test run" numbers come from development checks, not from the evaluation.</p>
 
-      <Details title="Scope: how the plan narrowed">
-        <p>The PRD v1.1 aimed at heterogeneous infrastructure: Kubernetes, AWS/GCP/Azure, microservices and VMs, fed by ELK, Datadog, PagerDuty and Kafka. The July 2026 proposal and decision D8 narrowed this to a <strong>Kubernetes-only research prototype</strong>:</p>
+      <Details title="Scope and team">
         <ul>
-          <li>Out of scope: cloud providers, VMs, Datadog/PagerDuty, auto-remediation, production scale, deep-learning training, security-fault injection.</li>
-          <li>The system under test is Google's Online Boutique (11 services) on a local kind cluster.</li>
-          <li>The LLM only writes the explanation. It never chooses the root cause (D1).</li>
+          <li>Kubernetes only, on a local test cluster running Google's Online Boutique demo shop (11 services).</li>
+          <li>Out of scope: cloud, VMs, Datadog/PagerDuty, auto-fixing, production scale.</li>
+          <li>The LLM only writes the explanation. It never picks the root cause (D1).</li>
         </ul>
-        <p>Team: Md. Rifat Hossain (testbed, chaos, evaluation, packaging), Abdullah All Moneem (ingestion, detection, correlation), Rayhan Islam Prome (RCA, LLM, alerting, storage). BSc capstone, BAIUST CSE. Supervisor: Golam Moktader Nayeem.</p>
-        <OriginalFigure src="assets/Pasted%20image.png" label="InfraMind as a correlation and reasoning layer above existing observability tools" />
+        <p>Team: Md. Rifat Hossain, Abdullah All Moneem, Rayhan Islam Prome. BSc capstone, BAIUST CSE. Supervisor: Golam Moktader Nayeem.</p>
+        <OriginalFigure src="/assets/Pasted%20image.png" label="InfraMind as a layer above existing observability tools" />
       </Details>
     </section>
   )

@@ -7,51 +7,50 @@ export default function Testbed() {
       eyebrow="Phase P1"
       title="Testbed"
       tags={[['built', 'Built'], ['blocked', '1 blocker']]}
-      summary="A local kind cluster runs Online Boutique, a full observability stack and Chaos Mesh. One command (make up) brings it all up; make smoke-testbed checks it (6/6 passing)."
+      summary="A local Kubernetes cluster with a demo shop, monitoring tools and a fault injector. One command starts it: make up."
     >
       <Flow
-        caption="Faults are injected into Boutique; the observability stack records them; InfraMind reads the stack."
+        caption="We break the shop on purpose; monitoring records it; InfraMind reads the monitoring."
         w={132}
         colGap={44}
         nodes={[
-          { id: 'chaos', col: 0, row: 0, label: 'Chaos Mesh 2.7.2', sub: '5 fault CRs', status: 'changed' },
-          { id: 'app', col: 1, row: 0, label: 'Online Boutique', sub: 'v0.10.7 · 11 svcs', status: 'built' },
-          { id: 'prom', col: 2, row: 0, label: 'Prometheus', sub: '+ Alertmanager', status: 'external' },
-          { id: 'loki', col: 2, row: 1, label: 'Loki 6.21', sub: 'via Grafana Alloy', status: 'external' },
-          { id: 'jae', col: 2, row: 2, label: 'Jaeger 1.59', sub: 'OTel traces', status: 'external' },
-          { id: 'im', col: 3, row: 1, label: 'InfraMind', sub: 'on host :8080', status: 'built' },
+          { id: 'chaos', col: 0, row: 0, label: 'Chaos Mesh', sub: 'injects faults', status: 'changed' },
+          { id: 'app', col: 1, row: 0, label: 'Online Boutique', sub: 'demo shop', status: 'built' },
+          { id: 'prom', col: 2, row: 0, label: 'Prometheus', sub: 'metrics + alerts', status: 'external' },
+          { id: 'loki', col: 2, row: 1, label: 'Loki', sub: 'logs', status: 'external' },
+          { id: 'jae', col: 2, row: 2, label: 'Jaeger', sub: 'traces', status: 'external' },
+          { id: 'im', col: 3, row: 1, label: 'InfraMind', sub: 'port 8080', status: 'built' },
         ]}
         edges={[['chaos', 'app'], ['app', 'prom'], ['app', 'loki'], ['app', 'jae'], ['prom', 'im'], ['loki', 'im'], ['jae', 'im']]}
       />
 
-      <PlanBuilt planLabel="Planned (PRD / proposal)" rows={[
-        { name: 'Cluster', plan: 'Kubernetes', status: 'built', built: 'kind v0.24, k8s 1.30, 1 control-plane + 1 worker (fits a 7 GiB dev box).', where: 'testbed/kind/' },
-        { name: 'App under test', plan: 'Sock Shop (proposal) / Online Boutique (PRD)', status: 'changed', built: 'Online Boutique, load generator off, tracing on for 6 services.', where: 'testbed/boutique/' },
-        { name: 'Observability', plan: 'Existing tools', status: 'built', built: 'kube-prometheus-stack 55.7, Loki 6.21, Jaeger 3.3, Alloy 1.13.', where: 'testbed/obs/' },
-        { name: 'Fault injection', plan: 'Chaos Mesh, AWS FIS', status: 'blocked', built: 'Chaos Mesh only. Pod-level faults work; stress and network faults do not inject.', where: 'testbed/chaos/' },
+      <PlanBuilt planLabel="Planned" rows={[
+        { name: 'Cluster', plan: 'Kubernetes', status: 'built', built: 'kind, 2 nodes, fits a 7 GiB laptop.' },
+        { name: 'Demo app', plan: 'Sock Shop', status: 'changed', built: 'Online Boutique (better tracing).' },
+        { name: 'Monitoring', plan: 'Existing tools', status: 'built', built: 'Prometheus, Loki, Jaeger, Grafana.' },
+        { name: 'Fault injection', plan: 'Chaos Mesh', status: 'blocked', built: 'Pod faults work. CPU, memory, network faults don\'t.' },
       ]} />
 
-      <h3 className="h3">Fault experiments</h3>
-      <Table head={['Experiment', 'Target', 'Injects?']} rows={[
-        ['pod-kill', 'frontend pod', <Pill status="built">Verified</Pill>],
-        ['oom-kill (container-kill)', 'frontend server container', <Pill status="changed">Not verified</Pill>],
-        ['cpu-stress', 'adservice, 2 workers at 80% for 5 min', <Pill status="blocked">No</Pill>],
-        ['stress-memory', 'cartservice, hold 200 MiB', <Pill status="blocked">No</Pill>],
-        ['network-delay', 'recommendation → productcatalog, 200 ± 50 ms', <Pill status="blocked">No</Pill>],
+      <h3 className="h3">Fault types</h3>
+      <Table head={['Fault', 'Works?']} rows={[
+        ['Kill a pod', <Pill status="built">Yes</Pill>],
+        ['Kill a container', <Pill status="changed">Not checked</Pill>],
+        ['CPU stress', <Pill status="blocked">No</Pill>],
+        ['Memory stress', <Pill status="blocked">No</Pill>],
+        ['Network delay', <Pill status="blocked">No</Pill>],
       ]} />
 
       <div className="callout blocked">
-        <b>Open blocker.</b> chaos-daemon runs with <code>runtime=docker</code> on a containerd node and rejects every container id (<code>expected docker:// but got container</code>). Recorded runs confirm no effect: network delay left edge latency at about 1.2 ms. The proposed fix (D2-Chaos-runtime) is waiting for approval. NetworkChaos also needs host kernel modules <code>sch_netem</code>, <code>ip_set_hash_ipport</code>, <code>ip_set_hash_net</code>.
+        <b>Blocker:</b> Chaos Mesh is set for Docker, but the cluster uses containerd, so stress and network faults do nothing. The fix (D2-Chaos) waits for approval.
       </div>
 
-      <Details title="Ports, gates and partial tracing">
-        <Table head={['Port', 'Service']} rows={[
-          ['30090', 'Prometheus'], ['30093', 'Alertmanager'], ['30300', 'Grafana'],
-          ['30100', 'Loki gateway'], ['30686', 'Jaeger UI'], ['30317 / 30318', 'OTLP gRPC / HTTP'],
-          ['8080', 'InfraMind API (host); Alertmanager posts to 172.22.0.1:8080'],
+      <Details title="Health checks and links">
+        <p><b>Latest checks (10 Nov):</b> testbed 6/6, ingestion 5/5, detection 4/4 — all passing.</p>
+        <Table head={['Port', 'Tool']} rows={[
+          ['30090', 'Prometheus'], ['30093', 'Alertmanager'], ['30300', 'Grafana (dashboard: InfraMind / Signals)'],
+          ['30686', 'Jaeger'], ['8080', 'InfraMind API'],
         ]} />
-        <p><b>Gates:</b> <code>make smoke-testbed</code> (6 checks, including a pod-kill visible in all three backends), <code>make smoke-ingestion</code> (5), <code>make smoke-detection</code> (about 7 min). <code>make observe-fault</code> prints before/during/after timelines for any chaos CR.</p>
-        <p><b>Partial service graph:</b> adservice, cartservice, shippingservice and emailservice emit no traces. Live-verified edges: frontend → productcatalog, frontend → recommendation, recommendation → productcatalog.</p>
+        <p>4 of 11 shop services send no traces, so the service graph is partial.</p>
       </Details>
     </Section>
   )
